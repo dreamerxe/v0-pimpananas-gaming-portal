@@ -1,23 +1,38 @@
 "use client"
 
-import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react"
+import { useTonAddress, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react"
+import { useEffect, useState } from "react"
 
 export function useWallet() {
   const address = useTonAddress()
+  const wallet = useTonWallet()
   const [tonConnectUI] = useTonConnectUI()
+  const [isConnected, setIsConnected] = useState(false)
 
-  const isConnected = !!address
+  useEffect(() => {
+    // Update connection status
+    setIsConnected(!!wallet && !!address)
+  }, [wallet, address])
 
   const connect = async () => {
-    await tonConnectUI.openModal()
+    try {
+      await tonConnectUI.openModal()
+    } catch (error) {
+      console.error("[v0] Error connecting wallet:", error)
+    }
   }
 
   const disconnect = async () => {
-    await tonConnectUI.disconnect()
+    try {
+      await tonConnectUI.disconnect()
+    } catch (error) {
+      console.error("[v0] Error disconnecting wallet:", error)
+    }
   }
 
   return {
     address,
+    wallet,
     isConnected,
     connect,
     disconnect,

@@ -17,7 +17,12 @@ export function MobileHeader() {
 
           {/* Wallet & Notifications */}
           <div className="flex items-center gap-1.5 flex-shrink-0">
-            <Button size="icon" variant="ghost" className="h-8 w-8 text-primary hover:bg-primary/10">
+            <Button 
+              size="icon" 
+              variant="ghost" 
+              className="h-8 w-8 text-primary hover:bg-primary/10"
+              onClick={() => console.log("Notifications clicked")}
+            >
               <Bell className="h-4 w-4" />
             </Button>
 

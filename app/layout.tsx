@@ -23,18 +23,21 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
-        <Script src="https://telegram.org/js/telegram-web-app.js" strategy="beforeInteractive" />
+        <Script 
+          src="https://telegram.org/js/telegram-web-app.js" 
+          strategy="beforeInteractive" 
+        />
       </head>
-      <body className={`font-sans antialiased`}>
-        <TelegramProvider>
-          <TonConnectProvider>
+      <body className={`font-sans antialiased`} suppressHydrationWarning>
+        <TonConnectProvider>
+          <TelegramProvider>
             {children}
             <Toaster position="top-center" theme="dark" />
             <Analytics />
-          </TonConnectProvider>
-        </TelegramProvider>
+          </TelegramProvider>
+        </TonConnectProvider>
       </body>
     </html>
   )

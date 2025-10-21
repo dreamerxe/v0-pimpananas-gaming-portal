@@ -208,3 +208,49 @@
     display: none;
   }
 }
+
+
+/* Add this to your globals.css file after the existing TON Connect styles */
+
+/* Mobile TON Connect Button Styling */
+.ton-connect-button-mobile {
+  display: flex;
+  align-items: center;
+}
+
+.ton-connect-button-mobile button {
+  background: oklch(0.88 0.15 95) !important;
+  color: oklch(0.12 0.02 270) !important;
+  font-weight: 700 !important;
+  padding: 0.5rem 0.625rem !important;
+  height: 2rem !important;
+  border-radius: 0.375rem !important;
+  font-size: 0.75rem !important;
+  line-height: 1rem !important;
+  transition: all 0.2s !important;
+  box-shadow: 0 0 12px rgba(255, 226, 71, 0.2) !important;
+  border: none !important;
+  white-space: nowrap !important;
+}
+
+.ton-connect-button-mobile button:hover {
+  background: oklch(0.85 0.15 95) !important;
+  box-shadow: 0 0 16px rgba(255, 226, 71, 0.3) !important;
+}
+
+/* Hide TON Connect modal default styling conflicts */
+.ton-connect-button-mobile .tc-button {
+  min-width: auto !important;
+}
+
+/* Ensure the button icon and text are properly aligned */
+.ton-connect-button-mobile button > div {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+}
+
+.ton-connect-button-mobile button svg {
+  width: 0.75rem !important;
+  height: 0.75rem !important;
+}

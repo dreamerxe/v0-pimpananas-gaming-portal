@@ -3,6 +3,7 @@
 import { Bell, Wallet } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react"
+import { toast } from "sonner"
 
 export function MobileHeader() {
   const address = useTonAddress()
@@ -11,6 +12,28 @@ export function MobileHeader() {
   const formatAddress = (addr: string) => {
     if (!addr) return ""
     return `${addr.slice(0, 4)}...${addr.slice(-4)}`
+  }
+
+  const handleConnect = async () => {
+    try {
+      if (!tonConnectUI) {
+        toast.error("TON Connect is not initialized")
+        return
+      }
+      
+      // Check if already connected
+      if (address) {
+        // Show wallet info or disconnect options
+        tonConnectUI.openModal()
+        return
+      }
+
+      // Open the modal to connect
+      await tonConnectUI.openModal()
+    } catch (error) {
+      console.error("Error opening TON Connect modal:", error)
+      toast.error("Failed to open wallet connection")
+    }
   }
 
   return (
@@ -33,7 +56,7 @@ export function MobileHeader() {
               <Button
                 size="sm"
                 className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold shadow-lg shadow-primary/20 text-xs px-2 h-8"
-                onClick={() => tonConnectUI.openModal()}
+                onClick={handleConnect}
               >
                 <Wallet className="mr-1 h-3 w-3" />
                 {formatAddress(address)}
@@ -42,7 +65,7 @@ export function MobileHeader() {
               <Button
                 size="sm"
                 className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold shadow-lg shadow-primary/20 text-xs px-2.5 h-8 whitespace-nowrap"
-                onClick={() => tonConnectUI.openModal()}
+                onClick={handleConnect}
               >
                 <Wallet className="mr-1 h-3 w-3" />
                 Connect

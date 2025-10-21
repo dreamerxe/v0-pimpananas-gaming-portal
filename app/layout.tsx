@@ -2,11 +2,9 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from "@vercel/analytics/next"
-import { TonConnectProvider } from "@/providers/ton-connect-provider"
-import { TelegramProvider } from "@/components/telegram-provider"
-import { Toaster } from "sonner"
 import Script from "next/script"
 import "./globals.css"
+import { Providers } from "@/components/providers"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -31,13 +29,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`font-sans antialiased`} suppressHydrationWarning>
-        <TonConnectProvider>
-          <TelegramProvider>
-            {children}
-            <Toaster position="top-center" theme="dark" />
-            <Analytics />
-          </TelegramProvider>
-        </TonConnectProvider>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   )

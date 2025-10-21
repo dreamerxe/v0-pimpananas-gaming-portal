@@ -3,8 +3,12 @@
 import { Bell } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { WalletConnectButton } from "@/components/wallet-connect-button"
+import { useTonAddress } from "@tonconnect/ui-react"
 
 export function MobileHeader() {
+  const address = useTonAddress()
+  const isConnected = !!address
+
   return (
     <header className="sticky top-0 z-50 border-b border-primary/20 backdrop-blur-md bg-background/95 shadow-lg shadow-primary/5">
       <div className="px-3 py-2.5 max-w-screen-xl mx-auto">
@@ -26,7 +30,7 @@ export function MobileHeader() {
               <Bell className="h-4 w-4" />
             </Button>
 
-            <WalletConnectButton />
+            {!isConnected && <WalletConnectButton />}
           </div>
         </div>
       </div>

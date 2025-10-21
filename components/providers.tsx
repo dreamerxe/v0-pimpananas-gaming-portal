@@ -5,7 +5,11 @@ import { Toaster } from "sonner"
 import { Analytics } from "@vercel/analytics/next"
 import { useEffect, useState } from "react"
 
-const manifestUrl = "https://raw.githubusercontent.com/ton-community/tutorials/main/03-client/test/public/tonconnect-manifest.json"
+const manifestUrl =
+  typeof window !== "undefined"
+    ? `${window.location.origin}/tonconnect-manifest.json`
+    : "https://v0-pimpananas-gaming-portal-kohl.vercel.app/tonconnect-manifest.json"
+
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [isTelegramReady, setIsTelegramReady] = useState(false)

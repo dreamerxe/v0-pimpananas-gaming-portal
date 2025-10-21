@@ -1,7 +1,8 @@
 {
+  "manifestVersion": "1.0",
   "url": "https://v0-pimpananas-gaming-portal-kohl.vercel.app/",
   "name": "PIMPANANAS",
-  "iconUrl": "https://your-domain.com/icon.svg",
-  "termsOfUseUrl": "https://your-domain.com/terms",
-  "privacyPolicyUrl": "https://your-domain.com/privacy"
+  "iconUrl": "https://v0-pimpananas-gaming-portal-kohl.vercel.app/icon.png",
+  "termsOfUseUrl": "https://v0-pimpananas-gaming-portal-kohl.vercel.app/terms",
+  "privacyPolicyUrl": "https://v0-pimpananas-gaming-portal-kohl.vercel.app/privacy"
 }

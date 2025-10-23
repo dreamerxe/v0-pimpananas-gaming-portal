@@ -17,21 +17,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
     // Wait for Telegram WebApp to be ready
     if (typeof window !== "undefined") {
       if (window.Telegram?.WebApp) {
-        const webApp = window.Telegram.WebApp
+        window.Telegram.WebApp.ready()
+        window.Telegram.WebApp.expand()
         
-        webApp.ready()
-        webApp.expand()
-        webApp.enableClosingConfirmation()
-        
-        // Set header color to match your app
-        webApp.setHeaderColor('#000000')
-        webApp.setBackgroundColor('#000000')
+        // Enable closing confirmation for better UX
+        window.Telegram.WebApp.enableClosingConfirmation()
         
         console.log("[Providers] Telegram WebApp initialized", {
-          platform: webApp.platform,
-          version: webApp.version,
-          initDataUnsafe: webApp.initDataUnsafe,
-          colorScheme: webApp.colorScheme
+          platform: window.Telegram.WebApp.platform,
+          version: window.Telegram.WebApp.version,
+          initData: window.Telegram.WebApp.initData ? "present" : "missing"
         })
       }
       setIsTelegramReady(true)
@@ -42,21 +37,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
   if (!isTelegramReady) {
     return null
   }
-
-  // Get the Telegram bot username from the URL or environment
-  const getTelegramBotName = () => {
-    if (typeof window !== 'undefined') {
-      // Try to extract from initData
-      const initData = window.Telegram?.WebApp?.initDataUnsafe
-      if (initData?.start_param) {
-        return initData.start_param
-      }
-    }
-    // Fallback - replace with your actual bot username
-    return "YourBotUsername"
-  }
-
-  const botName = getTelegramBotName()
 
   return (
     <TonConnectUIProvider 
@@ -71,7 +51,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             bridgeUrl: "https://bridge.ton.space/bridge",
             platforms: ["ios", "android", "macos", "windows", "linux"],
             universalLink: "https://t.me/wallet?attach=wallet",
-            jsBridgeKey: "telegram-wallet"
+            deepLink: "tg://resolve?domain=wallet&attach=wallet"
           },
           {
             appName: "tonkeeper",
@@ -79,14 +59,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
             imageUrl: "https://tonkeeper.com/assets/tonconnect-icon.png",
             aboutUrl: "https://tonkeeper.com",
             universalLink: "https://app.tonkeeper.com/ton-connect",
+            deepLink: "tonkeeper://ton-connect",
             bridgeUrl: "https://bridge.tonapi.io/bridge",
-            platforms: ["ios", "android", "chrome", "firefox"],
-            jsBridgeKey: "tonkeeper"
+            platforms: ["ios", "android", "chrome", "firefox"]
           }
         ]
       }}
       actionsConfiguration={{
-        twaReturnUrl: `https://t.me/${botName}`,
+        twaReturnUrl: typeof window !== "undefined" 
+          ? `${window.location.origin}${window.location.pathname}`
+          : undefined,
         returnStrategy: 'back',
         skipRedirectToWallet: 'never'
       }}

@@ -15,7 +15,6 @@ export function useWallet() {
   const [tick, setTick] = useState(0)
   const pollRef = useRef<number | null>(null)
   const prevSnapshotRef = useRef<string | null>(null)
-  const reconnectAttemptedRef = useRef(false)
 
   useEffect(() => {
     const readTonconnectItems = () => {
@@ -52,24 +51,6 @@ export function useWallet() {
     const onVisibilityChange = () => {
       if (document.visibilityState === "visible") {
         console.debug("[useWallet][visibility] visible — re-checking session")
-        
-        // Force refresh connection status when returning to app
-        const { items } = readTonconnectItems()
-        const hasConnection = Object.keys(items).some(k => 
-          items[k] && items[k]?.includes('"account"')
-        )
-        
-        if (hasConnection && !wallet && !reconnectAttemptedRef.current) {
-          console.debug("[useWallet][visibility] Found connection data but no wallet, attempting restore...")
-          reconnectAttemptedRef.current = true
-          tonConnectUI?.connectionRestored?.then(() => {
-            console.debug("[useWallet][visibility] Connection restored")
-            setTick(t => t + 1)
-          }).catch(err => {
-            console.error("[useWallet][visibility] Failed to restore connection", err)
-          })
-        }
-        
         setTick(t => t + 1)
       }
     }
@@ -87,29 +68,15 @@ export function useWallet() {
         console.debug("[useWallet][poll] tonconnect snapshot changed")
         prevSnapshotRef.current = snapshot
         setTick(t => t + 1)
+      } else {
+        // still log occasionally for debugging
+        console.debug("[useWallet][poll] no change")
       }
-    }, 1000) // 1 second polling for Telegram
+    }, 1500) // Reduced to 1.5s for faster detection in Telegram
 
     window.addEventListener("storage", onStorage)
     window.addEventListener("focus", onFocus)
     document.addEventListener("visibilitychange", onVisibilityChange)
-
-    // Telegram-specific: listen for viewportChanged
-    if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
-      const onViewportChanged = () => {
-        console.debug("[useWallet][telegram] viewport changed")
-        setTick(t => t + 1)
-      }
-      window.Telegram.WebApp.onEvent('viewportChanged', onViewportChanged)
-      
-      return () => {
-        window.removeEventListener("storage", onStorage)
-        window.removeEventListener("focus", onFocus)
-        document.removeEventListener("visibilitychange", onVisibilityChange)
-        window.Telegram?.WebApp?.offEvent('viewportChanged', onViewportChanged)
-        if (pollRef.current) window.clearInterval(pollRef.current)
-      }
-    }
 
     return () => {
       window.removeEventListener("storage", onStorage)
@@ -117,7 +84,7 @@ export function useWallet() {
       document.removeEventListener("visibilitychange", onVisibilityChange)
       if (pollRef.current) window.clearInterval(pollRef.current)
     }
-  }, [tonConnectUI, wallet, address])
+  }, [tonConnectUI])
 
   const connect = async () => {
     try {
@@ -127,21 +94,12 @@ export function useWallet() {
       }
       
       // Check if we're in Telegram
-      const isTelegram = typeof window !== 'undefined' && window.Telegram?.WebApp?.platform
-      
-      console.debug("[useWallet] Opening wallet connection modal...", { 
-        isTelegram,
-        platform: window.Telegram?.WebApp?.platform,
-        hasWallet: !!wallet,
-        hasAddress: !!address
-      })
-      
-      // Reset reconnect flag
-      reconnectAttemptedRef.current = false
+      const isTelegram = typeof window !== 'undefined' && 
+        (window as any).Telegram?.WebApp?.platform !== undefined
+
+      console.debug("[useWallet] Connecting wallet...", { isTelegram })
       
       await tonConnectUI.openModal()
-      
-      console.debug("[useWallet] Modal opened successfully")
     } catch (error) {
       console.error("[useWallet] Error connecting wallet:", error)
     }
@@ -153,12 +111,7 @@ export function useWallet() {
         console.warn("[useWallet] tonConnectUI not ready")
         return
       }
-      
-      reconnectAttemptedRef.current = false
-      
       await tonConnectUI.disconnect()
-      
-      console.debug("[useWallet] Disconnected successfully")
     } catch (error) {
       console.error("[useWallet] Error disconnecting wallet:", error)
     }

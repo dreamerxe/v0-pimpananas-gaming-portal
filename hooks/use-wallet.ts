@@ -59,7 +59,7 @@ export function useWallet() {
     console.debug("[useWallet] init:", { wallet, address, isConnected, tonConnectUI })
     logSessionKeys()
 
-    // polling fallback for webviews that don't dispatch storage events
+    // polling fallback for webviews that don't dispatch storage events (crucial for Telegram)
     pollRef.current = window.setInterval(() => {
       const { keys, items } = readTonconnectItems()
       const snapshot = JSON.stringify({ keys, items })
@@ -72,7 +72,7 @@ export function useWallet() {
         // still log occasionally for debugging
         console.debug("[useWallet][poll] no change")
       }
-    }, 2000)
+    }, 1500) // Reduced to 1.5s for faster detection in Telegram
 
     window.addEventListener("storage", onStorage)
     window.addEventListener("focus", onFocus)
@@ -84,30 +84,36 @@ export function useWallet() {
       document.removeEventListener("visibilitychange", onVisibilityChange)
       if (pollRef.current) window.clearInterval(pollRef.current)
     }
-  // tick intentionally omitted from deps; tick is only used to force re-render when events occur
   }, [tonConnectUI])
 
   const connect = async () => {
     try {
       if (!tonConnectUI?.openModal) {
-        console.warn("[v0] tonConnectUI not ready")
+        console.warn("[useWallet] tonConnectUI not ready")
         return
       }
+      
+      // Check if we're in Telegram
+      const isTelegram = typeof window !== 'undefined' && 
+        (window as any).Telegram?.WebApp?.platform !== undefined
+
+      console.debug("[useWallet] Connecting wallet...", { isTelegram })
+      
       await tonConnectUI.openModal()
     } catch (error) {
-      console.error("[v0] Error connecting wallet:", error)
+      console.error("[useWallet] Error connecting wallet:", error)
     }
   }
 
   const disconnect = async () => {
     try {
       if (!tonConnectUI?.disconnect) {
-        console.warn("[v0] tonConnectUI not ready")
+        console.warn("[useWallet] tonConnectUI not ready")
         return
       }
       await tonConnectUI.disconnect()
     } catch (error) {
-      console.error("[v0] Error disconnecting wallet:", error)
+      console.error("[useWallet] Error disconnecting wallet:", error)
     }
   }
 

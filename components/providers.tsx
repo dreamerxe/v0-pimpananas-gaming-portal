@@ -10,7 +10,6 @@ const manifestUrl =
     ? `${window.location.origin}/tonconnect-manifest.json`
     : "https://v0-pimpananas-gaming-portal-kohl.vercel.app/tonconnect-manifest.json"
 
-
 export function Providers({ children }: { children: React.ReactNode }) {
   const [isTelegramReady, setIsTelegramReady] = useState(false)
 
@@ -20,6 +19,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
       if (window.Telegram?.WebApp) {
         window.Telegram.WebApp.ready()
         window.Telegram.WebApp.expand()
+        
+        // Enable closing confirmation for better UX
+        window.Telegram.WebApp.enableClosingConfirmation()
+        
+        console.log("[Providers] Telegram WebApp initialized", {
+          platform: window.Telegram.WebApp.platform,
+          version: window.Telegram.WebApp.version,
+          initData: window.Telegram.WebApp.initData ? "present" : "missing"
+        })
       }
       setIsTelegramReady(true)
     }
@@ -42,7 +50,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
             aboutUrl: "https://wallet.tg/",
             bridgeUrl: "https://bridge.ton.space/bridge",
             platforms: ["ios", "android", "macos", "windows", "linux"],
-            universalLink: "https://t.me/wallet/start"
+            universalLink: "https://t.me/wallet?attach=wallet",
+            deepLink: "tg://resolve?domain=wallet&attach=wallet"
           },
           {
             appName: "tonkeeper",
@@ -50,13 +59,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
             imageUrl: "https://tonkeeper.com/assets/tonconnect-icon.png",
             aboutUrl: "https://tonkeeper.com",
             universalLink: "https://app.tonkeeper.com/ton-connect",
+            deepLink: "tonkeeper://ton-connect",
             bridgeUrl: "https://bridge.tonapi.io/bridge",
             platforms: ["ios", "android", "chrome", "firefox"]
           }
         ]
       }}
       actionsConfiguration={{
-        twaReturnUrl: typeof window !== "undefined" ? window.location.origin : undefined
+        twaReturnUrl: typeof window !== "undefined" 
+          ? `${window.location.origin}${window.location.pathname}`
+          : undefined,
+        returnStrategy: 'back',
+        skipRedirectToWallet: 'never'
       }}
     >
       {children}

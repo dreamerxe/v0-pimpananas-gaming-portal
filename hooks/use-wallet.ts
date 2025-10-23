@@ -14,17 +14,24 @@ export function useWallet() {
   // debug / recovery: detect session changes in environments (Telegram webview) where events may not fire
   const [tick, setTick] = useState(0)
   const pollRef = useRef<number | null>(null)
+  const prevSnapshotRef = useRef<string | null>(null)
 
   useEffect(() => {
-    const logSessionKeys = () => {
+    const readTonconnectItems = () => {
       try {
         const keys = Object.keys(window.localStorage).filter(k => k.toLowerCase().includes("tonconnect"))
         const items: Record<string, string | null> = {}
         for (const k of keys) items[k] = window.localStorage.getItem(k)
-        console.debug("[useWallet] localStorage tonconnect keys:", keys, items)
+        return { keys, items }
       } catch (e) {
         console.debug("[useWallet] localStorage read error", e)
+        return { keys: [], items: {} as Record<string, string | null> }
       }
+    }
+
+    const logSessionKeys = () => {
+      const { keys, items } = readTonconnectItems()
+      console.debug("[useWallet] localStorage tonconnect keys:", keys, items)
     }
 
     const onStorage = (ev: StorageEvent) => {
@@ -41,25 +48,44 @@ export function useWallet() {
       setTick(t => t + 1)
     }
 
-    // polling fallback for webviews that don't dispatch storage events
-    pollRef.current = window.setInterval(() => {
-      logSessionKeys()
-    }, 2500)
-
-    window.addEventListener("storage", onStorage)
-    window.addEventListener("focus", onFocus)
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        console.debug("[useWallet][visibility] visible — re-checking session")
+        setTick(t => t + 1)
+      }
+    }
 
     // initial log
     console.debug("[useWallet] init:", { wallet, address, isConnected, tonConnectUI })
     logSessionKeys()
 
+    // polling fallback for webviews that don't dispatch storage events
+    pollRef.current = window.setInterval(() => {
+      const { keys, items } = readTonconnectItems()
+      const snapshot = JSON.stringify({ keys, items })
+      // if snapshot changed since last poll, trigger a tick so hooks update
+      if (prevSnapshotRef.current !== snapshot) {
+        console.debug("[useWallet][poll] tonconnect snapshot changed")
+        prevSnapshotRef.current = snapshot
+        setTick(t => t + 1)
+      } else {
+        // still log occasionally for debugging
+        console.debug("[useWallet][poll] no change")
+      }
+    }, 2000)
+
+    window.addEventListener("storage", onStorage)
+    window.addEventListener("focus", onFocus)
+    document.addEventListener("visibilitychange", onVisibilityChange)
+
     return () => {
       window.removeEventListener("storage", onStorage)
       window.removeEventListener("focus", onFocus)
+      document.removeEventListener("visibilitychange", onVisibilityChange)
       if (pollRef.current) window.clearInterval(pollRef.current)
     }
   // tick intentionally omitted from deps; tick is only used to force re-render when events occur
-  }, [tonConnectUI, wallet, address, isConnected])
+  }, [tonConnectUI])
 
   const connect = async () => {
     try {

@@ -6,15 +6,19 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react"
 import { useTelegram } from "@/hooks/use-telegram"
-import { Wallet, LogOut, User, Star, Gamepad2, Trophy, Copy, Check } from "lucide-react"
+import { Wallet, LogOut, User, Star, Gamepad2, Trophy, Copy, Check, Coins } from "lucide-react"
 import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase-client"
 import { toast } from "sonner"
+import { useTonBalance } from "@/hooks/use-ton-balance"
+import { useUserBalance } from "@/hooks/use-user-balance"
 
-export default function ProfilePage() {
+export default function ProfilePageEnhanced() {
   const address = useTonAddress()
   const [tonConnectUI] = useTonConnectUI()
   const { user, isTelegram } = useTelegram()
+  const { balance: tonBalance, balanceFormatted: tonBalanceFormatted, isLoading: isLoadingTon } = useTonBalance()
+  const { balance: pimpBalance, isLoading: isLoadingPimp } = useUserBalance()
   const [copied, setCopied] = useState(false)
   const [stats, setStats] = useState({
     gamesPlayed: 0,
@@ -173,6 +177,35 @@ export default function ProfilePage() {
           </Button>
         </CardContent>
       </Card>
+
+      {/* Balance Cards - TON & PIMP */}
+      <div className="grid grid-cols-2 gap-3 mb-4">
+        <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/30">
+          <CardContent className="pt-4 text-center">
+            <Wallet className="h-8 w-8 mx-auto mb-2 text-blue-500" />
+            <div className="text-2xl font-bold text-blue-500">
+              {isLoadingTon ? "..." : tonBalanceFormatted}
+            </div>
+            <div className="text-xs text-muted-foreground">TON Balance</div>
+            <div className="text-[10px] text-muted-foreground mt-1">
+              ≈ ${(tonBalance * 2.5).toFixed(2)} USD
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-primary/10 to-yellow-400/10 border-primary/30">
+          <CardContent className="pt-4 text-center">
+            <Coins className="h-8 w-8 mx-auto mb-2 text-primary" />
+            <div className="text-2xl font-bold text-primary">
+              {isLoadingPimp ? "..." : pimpBalance.toLocaleString()}
+            </div>
+            <div className="text-xs text-muted-foreground">$PIMP Coins</div>
+            <div className="text-[10px] text-muted-foreground mt-1">
+              Game Currency
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 gap-3 mb-4">

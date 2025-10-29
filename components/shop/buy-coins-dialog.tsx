@@ -3,11 +3,12 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Coins, Zap, TrendingUp, Wallet, Check } from "lucide-react"
+import { Coins, Zap, TrendingUp, Wallet, Check, AlertCircle } from "lucide-react"
 import { useState } from "react"
 import { useTonConnectUI } from "@tonconnect/ui-react"
 import { useWallet } from "@/hooks/use-wallet"
 import { toast } from "sonner"
+import { useTonBalance } from "@/hooks/use-ton-balance"
 
 interface BuyCoinsDialogProps {
   open: boolean
@@ -64,12 +65,19 @@ const PLATFORM_WALLET = process.env.NEXT_PUBLIC_PLATFORM_WALLET || "UQBvzM7HFJ5p
 export function BuyCoinsDialog({ open, onOpenChange, onSuccess }: BuyCoinsDialogProps) {
   const [tonConnectUI] = useTonConnectUI()
   const { address, isConnected } = useWallet()
+  const { balance: tonBalance, balanceFormatted, isLoading: isLoadingBalance } = useTonBalance()
   const [selectedPackage, setSelectedPackage] = useState<CoinPackage | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
 
   const handleBuyCoins = async (pkg: CoinPackage) => {
     if (!isConnected || !address) {
       toast.error("🍌 Please connect your wallet first!")
+      return
+    }
+
+    // Check if user has enough TON
+    if (tonBalance < pkg.ton) {
+      toast.error(`🍌 Insufficient TON! You need ${pkg.ton} TON but only have ${balanceFormatted} TON`)
       return
     }
 
@@ -136,6 +144,10 @@ export function BuyCoinsDialog({ open, onOpenChange, onSuccess }: BuyCoinsDialog
     }
   }
 
+  const hasEnoughTon = (pkg: CoinPackage) => {
+    return tonBalance >= pkg.ton
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -150,6 +162,35 @@ export function BuyCoinsDialog({ open, onOpenChange, onSuccess }: BuyCoinsDialog
         </DialogHeader>
 
         <div className="space-y-4 py-4">
+          {/* TON Balance Display */}
+          {isConnected && (
+            <div className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Your TON Balance</p>
+                  <div className="flex items-center gap-2">
+                    <Wallet className="h-5 w-5 text-blue-500" />
+                    <span className="text-2xl font-bold text-blue-500">
+                      {isLoadingBalance ? "..." : balanceFormatted} TON
+                    </span>
+                  </div>
+                  {tonBalance === 0 && (
+                    <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+                      <AlertCircle className="h-3 w-3" />
+                      You need TON to purchase coins. Get TON from an exchange or bridge.
+                    </p>
+                  )}
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-muted-foreground">Testnet/Mainnet</p>
+                  <Badge variant="outline" className="mt-1">
+                    {tonBalance > 0 ? "✓ Ready" : "⚠ Low Balance"}
+                  </Badge>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* First Purchase Bonus Banner */}
           <div className="bg-gradient-to-r from-primary/20 to-secondary/20 border border-primary/30 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
@@ -166,19 +207,22 @@ export function BuyCoinsDialog({ open, onOpenChange, onSuccess }: BuyCoinsDialog
             {COIN_PACKAGES.map((pkg) => {
               const baseCoins = pkg.ton * 1000
               const bonusCoins = pkg.coins - baseCoins
+              const canAfford = hasEnoughTon(pkg)
               
               return (
                 <div
                   key={pkg.id}
-                  className={`relative border rounded-lg p-4 transition-all cursor-pointer hover:border-primary/50 ${
+                  className={`relative border rounded-lg p-4 transition-all cursor-pointer ${
+                    !canAfford ? "opacity-50" : "hover:border-primary/50"
+                  } ${
                     pkg.bestValue ? "border-secondary/50 bg-secondary/5" : "border-border"
                   } ${
                     selectedPackage?.id === pkg.id ? "border-primary ring-2 ring-primary/20" : ""
                   }`}
-                  onClick={() => !isProcessing && setSelectedPackage(pkg)}
+                  onClick={() => canAfford && !isProcessing && setSelectedPackage(pkg)}
                 >
                   {/* Badges */}
-                  <div className="absolute top-2 right-2 flex gap-1">
+                  <div className="absolute top-2 right-2 flex gap-1 flex-wrap justify-end">
                     {pkg.popular && (
                       <Badge className="bg-primary text-primary-foreground text-xs">
                         🔥 Popular
@@ -187,6 +231,11 @@ export function BuyCoinsDialog({ open, onOpenChange, onSuccess }: BuyCoinsDialog
                     {pkg.bestValue && (
                       <Badge className="bg-secondary text-secondary-foreground text-xs">
                         💎 Best Value
+                      </Badge>
+                    )}
+                    {!canAfford && (
+                      <Badge variant="outline" className="text-xs border-red-500 text-red-500">
+                        Insufficient TON
                       </Badge>
                     )}
                   </div>
@@ -224,11 +273,13 @@ export function BuyCoinsDialog({ open, onOpenChange, onSuccess }: BuyCoinsDialog
                         e.stopPropagation()
                         handleBuyCoins(pkg)
                       }}
-                      disabled={isProcessing || !isConnected}
+                      disabled={isProcessing || !isConnected || !canAfford}
                       className="ml-4 bg-primary hover:bg-primary/90"
                     >
                       {isProcessing && selectedPackage?.id === pkg.id ? (
                         "Processing..."
+                      ) : !canAfford ? (
+                        "Need More TON"
                       ) : (
                         <>
                           <Wallet className="mr-2 h-4 w-4" />

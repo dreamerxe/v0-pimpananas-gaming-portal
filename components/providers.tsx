@@ -49,6 +49,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             imageUrl: "https://wallet.tg/images/logo-288.png",
             aboutUrl: "https://wallet.tg/",
             bridgeUrl: "https://bridge.ton.space/bridge",
+            jsBridgeKey: "telegram-wallet",
             platforms: ["ios", "android", "macos", "windows", "linux"],
             universalLink: "https://t.me/wallet?attach=wallet",
             deepLink: "tg://resolve?domain=wallet&attach=wallet"

@@ -38,24 +38,14 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className={`dark ${inter.variable} ${poppins.variable}`}>
       <head>
         <Script 
           src="https://telegram.org/js/telegram-web-app.js" 
           strategy="beforeInteractive" 
         />
       </head>
-      <body 
-        className={`${inter.variable} ${poppins.variable} antialiased`}
-        style={{
-          fontFamily: 'var(--font-inter), system-ui, sans-serif',
-        }}
-      >
-        <style jsx global>{`
-          h1, h2, h3, h4, h5, h6 {
-            font-family: var(--font-poppins), system-ui, sans-serif;
-          }
-        `}</style>
+      <body className="antialiased font-sans">
         <Providers>
           {children}
         </Providers>

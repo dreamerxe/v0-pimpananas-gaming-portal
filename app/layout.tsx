@@ -1,35 +1,21 @@
 import type { Metadata } from "next"
-import { Inter, Poppins } from 'next/font/google'
+import { Geist, Geist_Mono } from 'next/font/google'
 import Script from "next/script"
 import "./globals.css"
 import { Providers } from "@/components/providers"
 
-// Premium font for body text - Inter (clean, modern, highly legible)
-const inter = Inter({ 
+const geistSans = Geist({ 
   subsets: ["latin"],
-  variable: '--font-inter',
-  display: 'swap',
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-geist-sans',
 })
-
-// Premium font for headings - Poppins (bold, contemporary, designer feel)
-const poppins = Poppins({ 
+const geistMono = Geist_Mono({ 
   subsets: ["latin"],
-  variable: '--font-poppins',
-  display: 'swap',
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-geist-mono',
 })
 
 export const metadata: Metadata = {
-  title: "PIMPANANAS - Premium Web3 Gaming Portal",
-  description: "Play the best WebGL games with your TON wallet. Premium gaming experience with $PIMP rewards.",
-  keywords: "Web3 gaming, TON wallet, blockchain games, play to earn, PIMPANANAS",
-  authors: [{ name: "PIMPANANAS Team" }],
-  openGraph: {
-    title: "PIMPANANAS - Premium Web3 Gaming Portal",
-    description: "Play premium WebGL games and earn $PIMP coins",
-    type: "website",
-  },
+  title: "PIMPANANAS - Web3 Gaming Portal",
+  description: "Play the best WebGL games with your TON wallet. Neon-powered gaming paradise.",
 }
 
 export default function RootLayout({
@@ -38,14 +24,14 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`dark ${inter.variable} ${poppins.variable}`}>
+    <html lang="en" className="dark">
       <head>
         <Script 
           src="https://telegram.org/js/telegram-web-app.js" 
           strategy="beforeInteractive" 
         />
       </head>
-      <body className="antialiased font-sans">
+      <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
         <Providers>
           {children}
         </Providers>

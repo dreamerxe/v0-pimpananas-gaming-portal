@@ -1,322 +1,256 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-@layer base {
-  :root {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 6%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 6%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 48 100% 64%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 328 100% 60%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 50.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 48 100% 64%;
-    --radius: 0.75rem;
-  }
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* PIMPANANAS neon banana theme colors */
+  --background: oklch(0.12 0.02 270); /* Dark purple-blue #1E1E2F */
+  --foreground: oklch(0.98 0 0); /* White text */
+  --card: oklch(0.18 0.03 270); /* Slightly lighter dark */
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.15 0.02 270);
+  --popover-foreground: oklch(0.98 0 0);
+  --primary: oklch(0.88 0.15 95); /* Banana yellow #FFE247 */
+  --primary-foreground: oklch(0.12 0.02 270); /* Dark text on yellow */
+  --secondary: oklch(0.72 0.25 330); /* Neon pink #FF33E6 */
+  --secondary-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.25 0.03 270);
+  --muted-foreground: oklch(0.65 0.02 270);
+  --accent: oklch(0.72 0.25 330); /* Neon pink */
+  --accent-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.25 0.03 270);
+  --input: oklch(0.25 0.03 270);
+  --ring: oklch(0.88 0.15 95); /* Yellow ring */
+  --chart-1: oklch(0.88 0.15 95);
+  --chart-2: oklch(0.72 0.25 330);
+  --chart-3: oklch(0.6 0.2 200);
+  --chart-4: oklch(0.7 0.2 150);
+  --chart-5: oklch(0.65 0.2 50);
+  --radius: 0.75rem;
+  --sidebar: oklch(0.15 0.02 270);
+  --sidebar-foreground: oklch(0.98 0 0);
+  --sidebar-primary: oklch(0.88 0.15 95);
+  --sidebar-primary-foreground: oklch(0.12 0.02 270);
+  --sidebar-accent: oklch(0.25 0.03 270);
+  --sidebar-accent-foreground: oklch(0.98 0 0);
+  --sidebar-border: oklch(0.25 0.03 270);
+  --sidebar-ring: oklch(0.88 0.15 95);
+}
+
+.dark {
+  --background: oklch(0.12 0.02 270);
+  --foreground: oklch(0.98 0 0);
+  --card: oklch(0.18 0.03 270);
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.15 0.02 270);
+  --popover-foreground: oklch(0.98 0 0);
+  --primary: oklch(0.88 0.15 95);
+  --primary-foreground: oklch(0.12 0.02 270);
+  --secondary: oklch(0.72 0.25 330);
+  --secondary-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.25 0.03 270);
+  --muted-foreground: oklch(0.65 0.02 270);
+  --accent: oklch(0.72 0.25 330);
+  --accent-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.25 0.03 270);
+  --input: oklch(0.25 0.03 270);
+  --ring: oklch(0.88 0.15 95);
+  --chart-1: oklch(0.88 0.15 95);
+  --chart-2: oklch(0.72 0.25 330);
+  --chart-3: oklch(0.6 0.2 200);
+  --chart-4: oklch(0.7 0.2 150);
+  --chart-5: oklch(0.65 0.2 50);
+  --sidebar: oklch(0.15 0.02 270);
+  --sidebar-foreground: oklch(0.98 0 0);
+  --sidebar-primary: oklch(0.88 0.15 95);
+  --sidebar-primary-foreground: oklch(0.12 0.02 270);
+  --sidebar-accent: oklch(0.25 0.03 270);
+  --sidebar-accent-foreground: oklch(0.98 0 0);
+  --sidebar-border: oklch(0.25 0.03 270);
+  --sidebar-ring: oklch(0.88 0.15 95);
+}
+
+@theme inline {
+  --font-sans: "Geist", "Geist Fallback";
+  --font-mono: "Geist Mono", "Geist Mono Fallback";
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border outline-ring/50;
   }
-  
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-feature-settings: "rlig" 1, "calt" 1;
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* Premium font styling */
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-poppins), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-weight: 900;
-    letter-spacing: -0.025em;
-  }
-
-  /* Smooth scrolling */
-  html {
-    scroll-behavior: smooth;
   }
 }
 
+/* Custom animations for neon glow effects */
+@keyframes neon-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 8px currentColor) drop-shadow(0 0 16px currentColor);
+  }
+  50% {
+    filter: drop-shadow(0 0 12px currentColor) drop-shadow(0 0 24px currentColor);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Added banana-themed glow animations */
+@keyframes banana-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(255, 226, 71, 0.3), 0 0 40px rgba(255, 226, 71, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 226, 71, 0.5), 0 0 60px rgba(255, 226, 71, 0.2);
+  }
+}
+
+@keyframes pink-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(255, 51, 230, 0.3), 0 0 40px rgba(255, 51, 230, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 51, 230, 0.5), 0 0 60px rgba(255, 51, 230, 0.2);
+  }
+}
+
+.neon-glow {
+  animation: neon-pulse 2s ease-in-out infinite;
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+.banana-glow {
+  animation: banana-glow 2s ease-in-out infinite;
+}
+
+.pink-glow {
+  animation: pink-glow 2s ease-in-out infinite;
+}
+
+/* Custom styling for TON Connect button to match theme */
+.ton-connect-button-wrapper button {
+  background: oklch(0.88 0.15 95) !important;
+  color: oklch(0.12 0.02 270) !important;
+  font-weight: 700 !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 0.5rem !important;
+  font-size: 1rem !important;
+  transition: all 0.2s !important;
+}
+
+.ton-connect-button-wrapper button:hover {
+  background: oklch(0.85 0.15 95) !important;
+}
+
+/* Added scrollbar hide utility for horizontal scrolling */
 @layer utilities {
-  /* Custom animations */
-  @keyframes float {
-    0%, 100% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-
-  @keyframes gradient {
-    0%, 100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-  }
-
-  @keyframes shimmer {
-    0% {
-      background-position: -1000px 0;
-    }
-    100% {
-      background-position: 1000px 0;
-    }
-  }
-
-  @keyframes pulse-glow {
-    0%, 100% {
-      box-shadow: 0 0 20px rgba(255, 226, 71, 0.3);
-    }
-    50% {
-      box-shadow: 0 0 40px rgba(255, 226, 71, 0.6);
-    }
-  }
-
-  .float-animation {
-    animation: float 3s ease-in-out infinite;
-  }
-
-  .animate-gradient {
-    background-size: 200% 200%;
-    animation: gradient 5s ease infinite;
-  }
-
-  .animate-shimmer {
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 226, 71, 0.1) 50%,
-      transparent 100%
-    );
-    background-size: 1000px 100%;
-    animation: shimmer 2s infinite;
-  }
-
-  .animate-pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
-  /* Premium neon glow effects */
-  .neon-glow {
-    box-shadow: 
-      0 0 10px rgba(255, 226, 71, 0.5),
-      0 0 20px rgba(255, 226, 71, 0.3),
-      0 0 30px rgba(255, 226, 71, 0.2);
-  }
-
-  .neon-glow-secondary {
-    box-shadow: 
-      0 0 10px rgba(255, 51, 230, 0.5),
-      0 0 20px rgba(255, 51, 230, 0.3),
-      0 0 30px rgba(255, 51, 230, 0.2);
-  }
-
-  .text-glow {
-    text-shadow: 
-      0 0 10px rgba(255, 226, 71, 0.8),
-      0 0 20px rgba(255, 226, 71, 0.4),
-      0 0 30px rgba(255, 226, 71, 0.2);
-  }
-
-  .text-glow-secondary {
-    text-shadow: 
-      0 0 10px rgba(255, 51, 230, 0.8),
-      0 0 20px rgba(255, 51, 230, 0.4),
-      0 0 30px rgba(255, 51, 230, 0.2);
-  }
-
-  /* Glass morphism effect */
-  .glass-effect {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  /* Premium gradients */
-  .gradient-premium {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 226, 71, 0.1) 0%,
-      rgba(255, 51, 230, 0.1) 100%
-    );
-  }
-
-  .gradient-gold {
-    background: linear-gradient(
-      135deg,
-      #FFD700 0%,
-      #FFA500 50%,
-      #FF8C00 100%
-    );
-  }
-
-  /* Scrollbar styling */
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-
-  /* Custom scrollbar for webkit browsers */
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: rgba(255, 226, 71, 0.05);
-    border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: rgba(255, 226, 71, 0.3);
-    border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 226, 71, 0.5);
-  }
-
-  /* Premium button effects */
-  .btn-premium {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-premium::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
-  }
-
-  .btn-premium:active::before {
-    width: 300px;
-    height: 300px;
-  }
-
-  /* Loading spinner */
-  @keyframes spin-slow {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  .animate-spin-slow {
-    animation: spin-slow 3s linear infinite;
-  }
-
-  /* Fade in animation */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-out;
-  }
-
-  /* Slide up animation */
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-slide-up {
-    animation: slideUp 0.6s ease-out;
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }
 
-/* TonConnect custom styling */
-.ton-connect-button-wrapper {
-  position: relative;
+
+/* Add this to your globals.css file after the existing TON Connect styles */
+
+/* Mobile TON Connect Button Styling */
+.ton-connect-button-mobile {
+  display: flex;
+  align-items: center;
 }
 
-.ton-connect-custom {
-  font-family: inherit !important;
-  border-radius: 0.5rem !important;
+.ton-connect-button-mobile button {
+  background: oklch(0.88 0.15 95) !important;
+  color: oklch(0.12 0.02 270) !important;
   font-weight: 700 !important;
-  box-shadow: 0 0 20px rgba(255, 226, 71, 0.2) !important;
+  padding: 0.5rem 0.625rem !important;
+  height: 2rem !important;
+  border-radius: 0.375rem !important;
+  font-size: 0.75rem !important;
+  line-height: 1rem !important;
+  transition: all 0.2s !important;
+  box-shadow: 0 0 12px rgba(255, 226, 71, 0.2) !important;
+  border: none !important;
+  white-space: nowrap !important;
 }
 
-/* Custom selection colors */
-::selection {
-  background-color: rgba(255, 226, 71, 0.3);
-  color: #fff;
+.ton-connect-button-mobile button:hover {
+  background: oklch(0.85 0.15 95) !important;
+  box-shadow: 0 0 16px rgba(255, 226, 71, 0.3) !important;
 }
 
-::-moz-selection {
-  background-color: rgba(255, 226, 71, 0.3);
-  color: #fff;
+/* Hide TON Connect modal default styling conflicts */
+.ton-connect-button-mobile .tc-button {
+  min-width: auto !important;
 }
 
-/* Remove tap highlight on mobile */
-* {
-  -webkit-tap-highlight-color: transparent;
+/* Ensure the button icon and text are properly aligned */
+.ton-connect-button-mobile button > div {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
 }
 
-/* Improve touch interactions */
-button, a, [role="button"] {
-  touch-action: manipulation;
-}
-
-/* Performance optimizations */
-img, video {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Reduce motion for users who prefer it */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+.ton-connect-button-mobile button svg {
+  width: 0.75rem !important;
+  height: 0.75rem !important;
 }

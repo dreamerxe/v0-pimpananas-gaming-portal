@@ -21,13 +21,35 @@ export async function GameSections() {
     )
   }
 
-  const topBananas = games.slice(0, 6)
-  const freshPicks = games.slice(6, 12)
-  const strategyGames = games.filter((g) => g.category === "Strategy").slice(0, 6)
+  // Group games by category
+  const gamesByCategory = games.reduce((acc, game) => {
+    const category = game.category || "Other"
+    if (!acc[category]) {
+      acc[category] = []
+    }
+    acc[category].push(game)
+    return acc
+  }, {} as Record<string, typeof games>)
+
+  // Define section icons and colors
+  const categoryIcons: Record<string, { emoji: string; colorClass: string; title: string }> = {
+    "Action": { emoji: "🔥", colorClass: "text-secondary", title: "Action Games" },
+    "Racing": { emoji: "🏎️", colorClass: "text-primary", title: "Racing Games" },
+    "Puzzle": { emoji: "🧩", colorClass: "text-secondary", title: "Puzzle Games" },
+    "Arcade": { emoji: "🕹️", colorClass: "text-primary", title: "Arcade Games" },
+    "Casual": { emoji: "✨", colorClass: "text-secondary", title: "Casual Games" },
+    "Strategy": { emoji: "🎯", colorClass: "text-primary", title: "Strategy Masters" },
+    "Sports": { emoji: "⚽", colorClass: "text-secondary", title: "Sports Games" },
+    "Adventure": { emoji: "🗺️", colorClass: "text-primary", title: "Adventure Games" },
+    "Other": { emoji: "🎮", colorClass: "text-secondary", title: "More Games" }
+  }
+
+  // Get top 9 games for featured section (Top Bananas)
+  const topBananas = games.slice(0, 9)
 
   return (
     <div className="space-y-8 pb-6 pt-4">
-      {/* Top Bananas Section */}
+      {/* Top Bananas Section - Featured/Most Recent */}
       <section className="space-y-4">
         <div className="px-4 flex items-center gap-3">
           <span className="text-2xl drop-shadow-[0_0_8px_rgba(255,51,230,0.5)]">🔥</span>
@@ -39,27 +61,21 @@ export async function GameSections() {
       {/* CTA Buttons with banana theme */}
       <CTAButtons />
 
-      {/* Fresh Picks Section */}
-      {freshPicks.length > 0 && (
-        <section className="space-y-4">
-          <div className="px-4 flex items-center gap-3">
-            <span className="text-2xl drop-shadow-[0_0_8px_rgba(255,226,71,0.5)]">✨</span>
-            <h2 className="text-xl font-black text-primary">Fresh Picks</h2>
-          </div>
-          <GameGrid games={freshPicks} />
-        </section>
-      )}
-
-      {/* Strategy Masters Section */}
-      {strategyGames.length > 0 && (
-        <section className="space-y-4">
-          <div className="px-4 flex items-center gap-3">
-            <span className="text-2xl drop-shadow-[0_0_8px_rgba(255,51,230,0.5)]">🎯</span>
-            <h2 className="text-xl font-black text-secondary">Strategy Masters</h2>
-          </div>
-          <GameGrid games={strategyGames} />
-        </section>
-      )}
+      {/* Category Sections - Display all categories with games */}
+      {Object.entries(gamesByCategory).map(([category, categoryGames]) => {
+        const config = categoryIcons[category] || categoryIcons["Other"]
+        
+        return (
+          <section key={category} className="space-y-4">
+            <div className="px-4 flex items-center gap-3">
+              <span className="text-2xl drop-shadow-[0_0_8px_rgba(255,226,71,0.5)]">{config.emoji}</span>
+              <h2 className={`text-xl font-black ${config.colorClass}`}>{config.title}</h2>
+              <span className="text-sm text-muted-foreground">({categoryGames.length})</span>
+            </div>
+            <GameGrid games={categoryGames} />
+          </section>
+        )
+      })}
     </div>
   )
 }

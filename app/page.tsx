@@ -73,7 +73,7 @@ export default async function HomePage() {
         </div>
 
         {/* More popular above indicator */}
-        <div className="flex items-center justify-center gap-2 py-3 mb-4">
+        {/* <div className="flex items-center justify-center gap-2 py-3 mb-4">
           <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
@@ -83,7 +83,7 @@ export default async function HomePage() {
             />
           </svg>
           <span className="text-sm font-semibold text-gray-600">More popular above</span>
-        </div>
+        </div> */}
 
         <div className="grid grid-cols-2 gap-3 pb-4">
           {games.map((game) => (

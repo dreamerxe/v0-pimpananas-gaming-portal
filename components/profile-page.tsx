@@ -215,13 +215,13 @@ export default function ProfilePage() {
         </div>
 
         {/* More popular above button */}
-        <button 
+        {/* <button 
           className="flex items-center justify-center gap-2 w-full py-2 mb-4 text-sm text-gray-600 font-medium"
           onClick={() => router.push("/")}
         >
           <TrendingUp className="h-4 w-4" />
           More popular above
-        </button>
+        </button> */}
       </div>
     </div>
   )

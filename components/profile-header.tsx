@@ -16,48 +16,62 @@ export function ProfileHeader() {
   const { balance } = useUserBalance()
   const router = useRouter()
   const [stats, setStats] = useState({
-    level: 1500,
-    timeSpent: 83 // in minutes
+    level: 0,
+    timeSpent: 0 // in minutes
   })
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     if (address) {
       fetchUserStats()
+    } else {
+      // If not connected, show zeros
+      setStats({ level: 0, timeSpent: 0 })
+      setIsLoading(false)
     }
   }, [address])
 
   const fetchUserStats = async () => {
     if (!address) return
     
+    setIsLoading(true)
     const supabase = createClient()
     
-    const { data: plays } = await supabase
-      .from("plays")
-      .select("duration_seconds")
-      .eq("wallet_address", address)
-    
-    const gamesPlayed = plays?.length || 0
-    const totalTimeSeconds = plays?.reduce((sum, play) => sum + (play.duration_seconds || 0), 0) || 0
-    
-    // Calculate level based on games played and time
-    const level = Math.floor((gamesPlayed * 100 + totalTimeSeconds / 60) / 100) || 1500
-    
-    setStats({
-      level: level,
-      timeSpent: Math.floor(totalTimeSeconds / 60) || 83
-    })
+    try {
+      const { data: plays } = await supabase
+        .from("plays")
+        .select("duration_seconds")
+        .eq("wallet_address", address)
+      
+      const gamesPlayed = plays?.length || 0
+      const totalTimeSeconds = plays?.reduce((sum, play) => sum + (play.duration_seconds || 0), 0) || 0
+      
+      // Calculate level based on games played and time
+      // Level = (games * 100 + time_in_minutes) / 100
+      const level = Math.floor((gamesPlayed * 100 + totalTimeSeconds / 60) / 100)
+      
+      setStats({
+        level: level,
+        timeSpent: Math.floor(totalTimeSeconds / 60)
+      })
+    } catch (error) {
+      console.error("Error fetching user stats:", error)
+      setStats({ level: 0, timeSpent: 0 })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const displayName = isTelegram && user?.username 
     ? `@${user.username}` 
     : address 
     ? `@${address.slice(2, 10)}`
-    : "@littlebear0213"
+    : "@guest"
 
   const formatTime = (minutes: number) => {
     const hours = Math.floor(minutes / 60)
     const mins = minutes % 60
-    return `${hours}h ${mins}m`
+    return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`
   }
 
   return (
@@ -82,7 +96,9 @@ export function ProfileHeader() {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <Coins className="h-4 w-4 text-orange-500" />
-                <span className="text-xl font-bold text-gray-900">{balance.toLocaleString()}</span>
+                <span className="text-xl font-bold text-gray-900">
+                  {balance.toLocaleString()}
+                </span>
               </div>
               <p className="text-xs text-gray-500">Currency</p>
             </div>
@@ -115,7 +131,15 @@ export function ProfileHeader() {
               <p className="text-white text-sm font-medium">Level</p>
             </div>
             <div className="bg-white p-4 text-center">
-              <p className="text-3xl font-black text-purple-600">{stats.level.toLocaleString()}</p>
+              {isLoading ? (
+                <div className="h-9 flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>
+                </div>
+              ) : (
+                <p className="text-3xl font-black text-purple-600">
+                  {stats.level.toLocaleString()}
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -128,7 +152,15 @@ export function ProfileHeader() {
               <p className="text-gray-800 text-sm font-medium">Time</p>
             </div>
             <div className="bg-white p-4 text-center">
-              <p className="text-3xl font-black text-green-600">{formatTime(stats.timeSpent)}</p>
+              {isLoading ? (
+                <div className="h-9 flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
+                </div>
+              ) : (
+                <p className="text-3xl font-black text-green-600">
+                  {formatTime(stats.timeSpent)}
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>

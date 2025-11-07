@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useTonAddress } from "@tonconnect/ui-react"
 import { useTelegram } from "@/hooks/use-telegram"
 import { useUserBalance } from "@/hooks/use-user-balance"
-import { Crown, Clock, Trophy, Gamepad2, TrendingUp, Coins } from "lucide-react"
+import { Crown, Clock, TrendingUp, Gamepad2, Coins } from "lucide-react"
 import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase-client"
 import { useRouter } from "next/navigation"
@@ -21,53 +21,65 @@ export default function ProfilePage() {
     skills: 0,
     gamesPlayed: 0
   })
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     if (address) {
       fetchUserStats()
+    } else {
+      setStats({ level: 0, timeSpent: 0, skills: 0, gamesPlayed: 0 })
+      setIsLoading(false)
     }
-  }, [address])
+  }, [address, pimpBalance])
 
   const fetchUserStats = async () => {
     if (!address) return
     
+    setIsLoading(true)
     const supabase = createClient()
     
-    const { data: plays } = await supabase
-      .from("plays")
-      .select("duration_seconds")
-      .eq("wallet_address", address)
-    
-    const gamesPlayed = plays?.length || 0
-    const totalTimeSeconds = plays?.reduce((sum, play) => sum + (play.duration_seconds || 0), 0) || 0
-    
-    // Calculate level based on games played and time
-    const level = Math.floor((gamesPlayed * 100 + totalTimeSeconds / 60) / 100)
-    
-    setStats({
-      level: level || 14,
-      timeSpent: Math.floor(totalTimeSeconds / 60),
-      skills: pimpBalance,
-      gamesPlayed: gamesPlayed || 28
-    })
+    try {
+      const { data: plays } = await supabase
+        .from("plays")
+        .select("duration_seconds")
+        .eq("wallet_address", address)
+      
+      const gamesPlayed = plays?.length || 0
+      const totalTimeSeconds = plays?.reduce((sum, play) => sum + (play.duration_seconds || 0), 0) || 0
+      
+      // Calculate level based on games played and time
+      const level = Math.floor((gamesPlayed * 100 + totalTimeSeconds / 60) / 100)
+      
+      setStats({
+        level: level,
+        timeSpent: Math.floor(totalTimeSeconds / 60),
+        skills: pimpBalance, // Skills = coins balance
+        gamesPlayed: gamesPlayed
+      })
+    } catch (error) {
+      console.error("Error fetching user stats:", error)
+      setStats({ level: 0, timeSpent: 0, skills: pimpBalance, gamesPlayed: 0 })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const displayName = isTelegram && user 
     ? user.first_name 
     : address 
     ? `${address.slice(0, 6)}...${address.slice(-4)}`
-    : "GAMER_NZ"
+    : "Guest"
 
   const username = isTelegram && user?.username 
     ? user.username 
     : address 
     ? `${address.slice(0, 8)}`
-    : "littlebear0213"
+    : "guest"
 
   const formatTime = (minutes: number) => {
     const hours = Math.floor(minutes / 60)
     const mins = minutes % 60
-    return `${hours}h ${mins}m`
+    return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`
   }
 
   return (
@@ -80,7 +92,6 @@ export default function ProfilePage() {
             backgroundImage: "url('data:image/svg+xml,%3Csvg width=\"800\" height=\"400\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cdefs%3E%3ClinearGradient id=\"grad\" x1=\"0%25\" y1=\"0%25\" x2=\"100%25\" y2=\"100%25\"%3E%3Cstop offset=\"0%25\" style=\"stop-color:rgb(219,39,119);stop-opacity:1\" /%3E%3Cstop offset=\"50%25\" style=\"stop-color:rgb(168,85,247);stop-opacity:1\" /%3E%3Cstop offset=\"100%25\" style=\"stop-color:rgb(251,146,60);stop-opacity:1\" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=\"800\" height=\"400\" fill=\"url(%23grad)\" /%3E%3C/svg%3E')"
           }}
         >
-          {/* Mountain silhouettes */}
           <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-pink-900/50 to-transparent" />
         </div>
         
@@ -126,7 +137,13 @@ export default function ProfilePage() {
                 <Crown className="h-6 w-6 text-white" />
               </div>
               <div className="text-sm text-gray-600 mb-1">Level</div>
-              <div className="text-3xl font-black text-gray-900">{stats.level}</div>
+              {isLoading ? (
+                <div className="h-9 flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
+                </div>
+              ) : (
+                <div className="text-3xl font-black text-gray-900">{stats.level}</div>
+              )}
             </CardContent>
           </Card>
 
@@ -137,7 +154,13 @@ export default function ProfilePage() {
                 <Clock className="h-6 w-6 text-white" />
               </div>
               <div className="text-sm text-gray-600 mb-1">Time</div>
-              <div className="text-2xl font-black text-gray-900">{formatTime(stats.timeSpent)}</div>
+              {isLoading ? (
+                <div className="h-9 flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                </div>
+              ) : (
+                <div className="text-2xl font-black text-gray-900">{formatTime(stats.timeSpent)}</div>
+              )}
             </CardContent>
           </Card>
 
@@ -159,7 +182,13 @@ export default function ProfilePage() {
                 <Gamepad2 className="h-6 w-6 text-white" />
               </div>
               <div className="text-sm text-gray-600 mb-1">Games</div>
-              <div className="text-3xl font-black text-gray-900">{stats.gamesPlayed}</div>
+              {isLoading ? (
+                <div className="h-9 flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-600"></div>
+                </div>
+              ) : (
+                <div className="text-3xl font-black text-gray-900">{stats.gamesPlayed}</div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -186,7 +215,10 @@ export default function ProfilePage() {
         </div>
 
         {/* More popular above button */}
-        <button className="flex items-center justify-center gap-2 w-full py-2 mb-4 text-sm text-gray-600 font-medium">
+        <button 
+          className="flex items-center justify-center gap-2 w-full py-2 mb-4 text-sm text-gray-600 font-medium"
+          onClick={() => router.push("/")}
+        >
           <TrendingUp className="h-4 w-4" />
           More popular above
         </button>

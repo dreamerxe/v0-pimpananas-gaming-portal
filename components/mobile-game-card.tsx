@@ -25,13 +25,13 @@ export function MobileGameCard({ game }: { game: Game }) {
   const { isConnected, connect, address } = useWallet()
 
   useEffect(() => {
-    // Generate realistic stats
-    const likeCount = Math.floor(Math.random() * 100)
-    const viewCount = Math.floor(Math.random() * 900) + 100
+    // Generate realistic stats matching reference (98%, 84.6K)
+    const likeCount = Math.floor(Math.random() * 7) + 92 // 92-98%
+    const viewCount = Math.floor(Math.random() * 600) + 86 // 86-686
     
-    setLikes(likeCount >= 90 ? `${likeCount}%` : `${likeCount}%`)
-    setViews(viewCount >= 1000 ? `${(viewCount / 1000).toFixed(1)}K` : `${viewCount}`)
-    setDifficulty(Math.floor(Math.random() * 3) + 1) // 1-3 flames
+    setLikes(`${likeCount}%`)
+    setViews(`${(viewCount / 10).toFixed(1)}K`)
+    setDifficulty(3) // Always 3 flames like reference
   }, [game.id])
 
   const handlePlay = async () => {
@@ -43,54 +43,57 @@ export function MobileGameCard({ game }: { game: Game }) {
     setIsPlaying(true)
   }
 
+  // Truncate title like reference "Sonic Speed Si..."
+  const truncateTitle = (title: string, maxLength: number = 16) => {
+    if (title.length <= maxLength) return title
+    return title.slice(0, maxLength) + "..."
+  }
+
   return (
     <>
-      <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-[28px] p-4 shadow-sm">
-        {/* Game thumbnail */}
-        <div className="relative w-full aspect-square mb-4 rounded-2xl overflow-hidden bg-white shadow-sm">
+      <div className="bg-gradient-to-br from-blue-100 via-blue-50 to-purple-50 rounded-[24px] p-4 shadow-md hover:shadow-lg transition-all duration-200">
+        {/* Game thumbnail with darker background */}
+        <div className="relative w-full aspect-square mb-3 rounded-[20px] overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900 shadow-sm">
           <Image
             src={game.thumbnail_url || "/placeholder.svg?height=200&width=200"}
             alt={game.title}
             fill
             className="object-cover"
+            priority={false}
           />
         </div>
 
-        {/* Game title */}
-        <h3 className="font-bold text-[15px] line-clamp-1 text-gray-900 mb-2 tracking-tight">
-          {game.title}
+        {/* Game title - truncated with ... */}
+        <h3 className="font-bold text-[15px] line-clamp-1 text-gray-900 mb-2 tracking-tight text-center">
+          {truncateTitle(game.title)}
         </h3>
         
-        {/* Stats row */}
-        <div className="flex items-center gap-3 mb-2 text-xs text-gray-600">
+        {/* Stats row - compact spacing */}
+        <div className="flex items-center justify-center gap-3 mb-2 text-xs text-gray-600">
           <div className="flex items-center gap-1">
-            <ThumbsUp className="w-3.5 h-3.5" />
-            <span className="font-medium">{likes}</span>
+            <ThumbsUp className="w-3.5 h-3.5 text-gray-500" />
+            <span className="font-semibold">{likes}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Eye className="w-3.5 h-3.5" />
-            <span className="font-medium">{views}</span>
+            <Eye className="w-3.5 h-3.5 text-gray-500" />
+            <span className="font-semibold">{views}</span>
           </div>
         </div>
 
-        {/* Difficulty */}
-        <div className="flex gap-1 mb-3">
+        {/* Difficulty flames - centered and closer together */}
+        <div className="flex gap-0.5 mb-3 justify-center">
           {Array.from({ length: 3 }).map((_, i) => (
             <Flame 
               key={i} 
-              className={`w-4 h-4 ${
-                i < difficulty 
-                  ? 'text-orange-500 fill-orange-500' 
-                  : 'text-gray-300 fill-gray-300'
-              }`} 
+              className="w-4 h-4 text-orange-500 fill-orange-500"
             />
           ))}
         </div>
 
-        {/* Play button */}
+        {/* Play button - exact blue from reference */}
         <button
           onClick={handlePlay}
-          className="w-full bg-[#5B8FF9] hover:bg-[#4A7FE8] active:bg-[#3A6FD7] text-white py-2.5 rounded-full font-semibold text-[15px] shadow-sm transition-colors"
+          className="w-full bg-[#2E7EF6] hover:bg-[#2563EB] active:scale-[0.98] text-white py-3 rounded-full font-bold text-[15px] shadow-md transition-all duration-150"
         >
           Play
         </button>

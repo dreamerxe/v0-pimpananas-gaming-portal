@@ -26,7 +26,7 @@ export default function ShopPage() {
       price: 5000,
       icon: "🍌",
       badge: "Popular",
-      color: "from-yellow-400/20 to-yellow-600/20",
+      color: "from-yellow-400/30 to-yellow-600/30",
     },
     {
       id: "power_boost",
@@ -35,7 +35,7 @@ export default function ShopPage() {
       price: 2500,
       icon: "⚡",
       badge: "Limited",
-      color: "from-blue-400/20 to-cyan-400/20",
+      color: "from-blue-400/30 to-cyan-400/30",
     },
     {
       id: "rare_avatar",
@@ -44,7 +44,7 @@ export default function ShopPage() {
       price: 3500,
       icon: "🎨",
       badge: "New",
-      color: "from-purple-400/20 to-pink-400/20",
+      color: "from-purple-400/30 to-pink-400/30",
     },
     {
       id: "mystery_box",
@@ -53,7 +53,7 @@ export default function ShopPage() {
       price: 4000,
       icon: "🎁",
       badge: "Mystery",
-      color: "from-orange-400/20 to-red-400/20",
+      color: "from-orange-400/30 to-red-400/30",
     },
   ]
 
@@ -101,15 +101,15 @@ export default function ShopPage() {
   }
 
   return (
-    <div className="relative min-h-screen pb-24 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+    <div className="relative min-h-screen pb-24 bg-gradient-to-b from-[#E8D5F2] via-[#E8D5F2]/50 to-white">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-gray-900/80 backdrop-blur-lg border-b border-gray-700">
+      <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200">
         <div className="px-4 py-4 flex items-center gap-3">
-          <button onClick={() => router.back()} className="p-2 hover:bg-gray-800 rounded-full">
-            <ArrowLeft className="h-5 w-5 text-gray-300" />
+          <button onClick={() => router.back()} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <ArrowLeft className="h-5 w-5 text-gray-700" />
           </button>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <ShoppingBag className="h-6 w-6 text-blue-400" />
+          <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+            <ShoppingBag className="h-6 w-6 text-[#5B8FF9]" />
             Banana Shop
           </h1>
         </div>
@@ -117,21 +117,21 @@ export default function ShopPage() {
 
       <main className="px-4 pt-6 max-w-2xl mx-auto">
         {/* Balance Card */}
-        <Card className="mb-6 bg-gradient-to-br from-blue-600/20 to-purple-600/20 border-blue-500/30 backdrop-blur-sm">
+        <Card className="mb-6 bg-gradient-to-br from-blue-400/20 to-purple-400/20 border-blue-200 backdrop-blur-sm shadow-lg">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400 mb-1">Your $PIMP Balance</p>
+                <p className="text-sm text-gray-600 mb-1">Your $PIMP Balance</p>
                 <div className="flex items-center gap-2">
-                  <Coins className="h-6 w-6 text-blue-400" />
-                  <span className="text-3xl font-bold text-white">
+                  <Coins className="h-6 w-6 text-[#5B8FF9]" />
+                  <span className="text-3xl font-bold text-gray-900">
                     {isLoading ? "..." : balance.toLocaleString()}
                   </span>
                 </div>
               </div>
               <Button 
                 onClick={() => setBuyDialogOpen(true)}
-                className="bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold hover:from-blue-600 hover:to-blue-700"
+                className="bg-[#5B8FF9] text-white font-bold hover:bg-[#4A7FE8] shadow-md"
               >
                 <Wallet className="mr-2 h-4 w-4" />
                 Buy More
@@ -145,35 +145,35 @@ export default function ShopPage() {
           {shopItems.map((item) => (
             <Card 
               key={item.id} 
-              className={`bg-gradient-to-br ${item.color} border-gray-700 backdrop-blur-sm overflow-hidden hover:border-blue-500/50 transition-all`}
+              className={`bg-gradient-to-br ${item.color} border-gray-200 backdrop-blur-sm overflow-hidden hover:shadow-lg transition-all duration-200`}
             >
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between mb-2">
                   <span className="text-4xl">{item.icon}</span>
                   {item.badge && (
-                    <Badge className="bg-blue-500 text-white text-xs px-2 py-0">
+                    <Badge className="bg-[#5B8FF9] text-white text-xs px-2 py-0">
                       {item.badge}
                     </Badge>
                   )}
                 </div>
-                <CardTitle className="text-base font-bold text-white">
+                <CardTitle className="text-base font-bold text-gray-900">
                   {item.name}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <p className="text-xs text-gray-400 line-clamp-2 min-h-[2rem]">
+                <p className="text-xs text-gray-600 line-clamp-2 min-h-[2rem]">
                   {item.description}
                 </p>
                 <div className="space-y-2">
-                  <div className="flex items-center justify-center gap-1 py-2 bg-gray-900/50 rounded-md">
-                    <Coins className="h-4 w-4 text-blue-400" />
-                    <span className="text-sm font-bold text-blue-400">{item.price.toLocaleString()}</span>
+                  <div className="flex items-center justify-center gap-1 py-2 bg-white/70 rounded-md">
+                    <Coins className="h-4 w-4 text-[#5B8FF9]" />
+                    <span className="text-sm font-bold text-[#5B8FF9]">{item.price.toLocaleString()}</span>
                   </div>
                   <Button 
                     size="sm" 
                     onClick={() => handleBuyItem(item)}
                     disabled={!isConnected || isLoading}
-                    className="w-full h-9 text-xs font-bold bg-blue-500 hover:bg-blue-600 text-white"
+                    className="w-full h-9 text-xs font-bold bg-[#5B8FF9] hover:bg-[#4A7FE8] text-white shadow-sm"
                   >
                     <ShoppingBag className="mr-1 h-3 w-3" />
                     {!isConnected ? "Connect Wallet" : "Buy Now"}
@@ -185,23 +185,23 @@ export default function ShopPage() {
         </div>
 
         {/* Daily Special */}
-        <Card className="mb-6 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border-purple-500/30 backdrop-blur-sm">
+        <Card className="mb-6 bg-gradient-to-r from-purple-400/20 to-pink-400/20 border-purple-200 backdrop-blur-sm shadow-lg">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg text-white">
-              <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
+            <CardTitle className="flex items-center gap-2 text-lg text-gray-900">
+              <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
               Daily Special Offer
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <h3 className="font-bold text-white mb-1">Starter Pack</h3>
-                <p className="text-xs text-gray-400 mb-2">
+                <h3 className="font-bold text-gray-900 mb-1">Starter Pack</h3>
+                <p className="text-xs text-gray-600 mb-2">
                   Get 5000 bonus coins + 3 power boosts
                 </p>
                 <div className="flex items-center gap-2">
                   <span className="text-sm line-through text-gray-500">2000</span>
-                  <span className="text-lg font-bold text-blue-400">999 $PIMP</span>
+                  <span className="text-lg font-bold text-[#5B8FF9]">999 $PIMP</span>
                   <Badge className="bg-pink-500 text-white">-50%</Badge>
                 </div>
               </div>
@@ -216,7 +216,7 @@ export default function ShopPage() {
                   description: ""
                 })}
                 disabled={!isConnected || isLoading}
-                className="bg-gradient-to-r from-pink-500 to-pink-600 text-white font-bold hover:from-pink-600 hover:to-pink-700"
+                className="bg-gradient-to-r from-pink-500 to-pink-600 text-white font-bold hover:from-pink-600 hover:to-pink-700 shadow-md"
               >
                 Claim
               </Button>

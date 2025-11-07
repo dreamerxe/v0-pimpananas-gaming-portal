@@ -1,21 +1,22 @@
 "use client"
 
-import { MobileHeader } from "@/components/mobile-header"
 import { BottomNav } from "@/components/bottom-nav"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ShoppingBag, Coins, Star, Wallet } from "lucide-react"
+import { ShoppingBag, Coins, Star, Wallet, ArrowLeft } from "lucide-react"
 import { BuyCoinsDialog } from "@/components/shop/buy-coins-dialog"
 import { useWallet } from "@/hooks/use-wallet"
 import { useUserBalance } from "@/hooks/use-user-balance"
 import { useState } from "react"
 import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 export default function ShopPage() {
   const { isConnected, address } = useWallet()
   const { balance, isLoading, refreshBalance } = useUserBalance()
   const [buyDialogOpen, setBuyDialogOpen] = useState(false)
+  const router = useRouter()
 
   const shopItems = [
     {
@@ -25,7 +26,7 @@ export default function ShopPage() {
       price: 5000,
       icon: "🍌",
       badge: "Popular",
-      color: "from-primary/20 to-yellow-400/20",
+      color: "from-yellow-400/20 to-yellow-600/20",
     },
     {
       id: "power_boost",
@@ -34,7 +35,7 @@ export default function ShopPage() {
       price: 2500,
       icon: "⚡",
       badge: "Limited",
-      color: "from-blue-500/20 to-cyan-400/20",
+      color: "from-blue-400/20 to-cyan-400/20",
     },
     {
       id: "rare_avatar",
@@ -43,7 +44,7 @@ export default function ShopPage() {
       price: 3500,
       icon: "🎨",
       badge: "New",
-      color: "from-purple-500/20 to-pink-400/20",
+      color: "from-purple-400/20 to-pink-400/20",
     },
     {
       id: "mystery_box",
@@ -52,26 +53,8 @@ export default function ShopPage() {
       price: 4000,
       icon: "🎁",
       badge: "Mystery",
-      color: "from-orange-500/20 to-red-400/20",
+      color: "from-orange-400/20 to-red-400/20",
     },
-    {
-      id: "vip_pass",
-      name: "VIP Pass",
-      description: "Access to exclusive games and tournaments",
-      price: 10000,
-      icon: "👑",
-      badge: "Premium",
-      color: "from-primary/20 to-yellow-600/20",
-    },
-    {
-      id: "double_coins",
-      name: "Double Coins",
-      description: "Earn 2x coins for 7 days",
-      price: 6000,
-      icon: "💰",
-      badge: "Hot",
-      color: "from-green-500/20 to-emerald-400/20",
-    }
   ]
 
   const handleBuyItem = async (item: typeof shopItems[0]) => {
@@ -118,35 +101,37 @@ export default function ShopPage() {
   }
 
   return (
-    <div className="relative min-h-screen pb-24 bg-gradient-to-b from-background via-background to-card">
-      <MobileHeader />
-      
-      <main className="px-3 pt-4 max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="mb-6 text-center">
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <span className="text-4xl drop-shadow-[0_0_8px_rgba(255,226,71,0.5)]">🛍️</span>
-            <h1 className="text-3xl font-black text-primary">Banana Shop</h1>
-          </div>
-          <p className="text-muted-foreground">Get awesome items with $PIMP coins</p>
+    <div className="relative min-h-screen pb-24 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+      {/* Header */}
+      <div className="sticky top-0 z-50 bg-gray-900/80 backdrop-blur-lg border-b border-gray-700">
+        <div className="px-4 py-4 flex items-center gap-3">
+          <button onClick={() => router.back()} className="p-2 hover:bg-gray-800 rounded-full">
+            <ArrowLeft className="h-5 w-5 text-gray-300" />
+          </button>
+          <h1 className="text-xl font-bold text-white flex items-center gap-2">
+            <ShoppingBag className="h-6 w-6 text-blue-400" />
+            Banana Shop
+          </h1>
         </div>
+      </div>
 
+      <main className="px-4 pt-6 max-w-2xl mx-auto">
         {/* Balance Card */}
-        <Card className="mb-6 bg-gradient-to-br from-primary/10 via-card to-secondary/10 border-primary/20">
+        <Card className="mb-6 bg-gradient-to-br from-blue-600/20 to-purple-600/20 border-blue-500/30 backdrop-blur-sm">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Your $PIMP Balance</p>
+                <p className="text-sm text-gray-400 mb-1">Your $PIMP Balance</p>
                 <div className="flex items-center gap-2">
-                  <Coins className="h-6 w-6 text-primary" />
-                  <span className="text-3xl font-bold text-primary">
+                  <Coins className="h-6 w-6 text-blue-400" />
+                  <span className="text-3xl font-bold text-white">
                     {isLoading ? "..." : balance.toLocaleString()}
                   </span>
                 </div>
               </div>
               <Button 
                 onClick={() => setBuyDialogOpen(true)}
-                className="bg-gradient-to-r from-primary to-yellow-400 text-primary-foreground font-bold"
+                className="bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold hover:from-blue-600 hover:to-blue-700"
               >
                 <Wallet className="mr-2 h-4 w-4" />
                 Buy More
@@ -156,36 +141,39 @@ export default function ShopPage() {
         </Card>
 
         {/* Shop Items Grid */}
-        <div className="grid grid-cols-2 gap-3 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           {shopItems.map((item) => (
-            <Card key={item.id} className={`bg-gradient-to-br ${item.color} border-border/50 overflow-hidden`}>
+            <Card 
+              key={item.id} 
+              className={`bg-gradient-to-br ${item.color} border-gray-700 backdrop-blur-sm overflow-hidden hover:border-blue-500/50 transition-all`}
+            >
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between mb-2">
-                  <span className="text-3xl">{item.icon}</span>
+                  <span className="text-4xl">{item.icon}</span>
                   {item.badge && (
-                    <Badge className="bg-secondary text-secondary-foreground text-[9px] px-1.5 py-0">
+                    <Badge className="bg-blue-500 text-white text-xs px-2 py-0">
                       {item.badge}
                     </Badge>
                   )}
                 </div>
-                <CardTitle className="text-sm font-bold line-clamp-1">
+                <CardTitle className="text-base font-bold text-white">
                   {item.name}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <p className="text-xs text-muted-foreground line-clamp-2 min-h-[2rem]">
+                <p className="text-xs text-gray-400 line-clamp-2 min-h-[2rem]">
                   {item.description}
                 </p>
                 <div className="space-y-2">
-                  <div className="flex items-center justify-center gap-1 py-1.5 bg-background/50 rounded-md">
-                    <Coins className="h-3.5 w-3.5 text-primary" />
-                    <span className="text-sm font-bold text-primary">{item.price.toLocaleString()}</span>
+                  <div className="flex items-center justify-center gap-1 py-2 bg-gray-900/50 rounded-md">
+                    <Coins className="h-4 w-4 text-blue-400" />
+                    <span className="text-sm font-bold text-blue-400">{item.price.toLocaleString()}</span>
                   </div>
                   <Button 
                     size="sm" 
                     onClick={() => handleBuyItem(item)}
                     disabled={!isConnected || isLoading}
-                    className="w-full h-8 text-xs font-bold bg-primary hover:bg-primary/90"
+                    className="w-full h-9 text-xs font-bold bg-blue-500 hover:bg-blue-600 text-white"
                   >
                     <ShoppingBag className="mr-1 h-3 w-3" />
                     {!isConnected ? "Connect Wallet" : "Buy Now"}
@@ -197,24 +185,24 @@ export default function ShopPage() {
         </div>
 
         {/* Daily Special */}
-        <Card className="mb-4 bg-gradient-to-r from-secondary/20 via-card to-primary/20">
+        <Card className="mb-6 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border-purple-500/30 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Star className="h-5 w-5 text-secondary fill-secondary" />
+            <CardTitle className="flex items-center gap-2 text-lg text-white">
+              <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
               Daily Special Offer
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <h3 className="font-bold mb-1">Starter Pack</h3>
-                <p className="text-xs text-muted-foreground mb-2">
+                <h3 className="font-bold text-white mb-1">Starter Pack</h3>
+                <p className="text-xs text-gray-400 mb-2">
                   Get 5000 bonus coins + 3 power boosts
                 </p>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm line-through text-muted-foreground">2000</span>
-                  <span className="text-lg font-bold text-primary">999 $PIMP</span>
-                  <Badge className="bg-secondary text-secondary-foreground">-50%</Badge>
+                  <span className="text-sm line-through text-gray-500">2000</span>
+                  <span className="text-lg font-bold text-blue-400">999 $PIMP</span>
+                  <Badge className="bg-pink-500 text-white">-50%</Badge>
                 </div>
               </div>
               <Button 
@@ -224,10 +212,11 @@ export default function ShopPage() {
                   price: 999, 
                   icon: "🎉", 
                   badge: "Special", 
-                  color: "" 
+                  color: "",
+                  description: ""
                 })}
                 disabled={!isConnected || isLoading}
-                className="bg-gradient-to-r from-secondary to-pink-600 text-white font-bold"
+                className="bg-gradient-to-r from-pink-500 to-pink-600 text-white font-bold hover:from-pink-600 hover:to-pink-700"
               >
                 Claim
               </Button>

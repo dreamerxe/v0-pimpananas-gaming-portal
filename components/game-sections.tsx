@@ -47,13 +47,15 @@ export async function GameSections() {
   const categories = Object.keys(gamesByCategory)
 
   return (
-    <div className="pb-6 pt-6 bg-[#F5F3F0] min-h-screen">
+    <div className="pb-6">
       <div className="px-5 mb-6">
-        <h1 className="text-[28px] font-bold text-gray-900 mb-5 leading-tight tracking-tight">Recommended games</h1>
+        <h2 className="text-2xl font-bold text-gray-900 text-center mb-5 leading-tight tracking-tight">
+          Recommended<br />games
+        </h2>
         
         {/* Category Filter Tabs */}
-        <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide mb-4">
-          {categories.map((category, index) => (
+        <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide mb-4 justify-center">
+          {categories.slice(0, 3).map((category, index) => (
             <div 
               key={category}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-full whitespace-nowrap transition-all ${
@@ -67,22 +69,24 @@ export async function GameSections() {
             </div>
           ))}
         </div>
-
-        {/* More popular above toggle */}
-        <button className="flex items-center justify-center gap-2 text-[15px] text-gray-700 font-medium mb-6 mx-auto">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
-          </svg>
-          More popular above
-        </button>
       </div>
 
-      {/* Games Grid - 2 columns */}
-      <div className="px-5">
-        <div className="grid grid-cols-2 gap-4">
-          {games.map((game) => (
-            <MobileGameCard key={game.id} game={game} />
+      {/* Games Grid - Show first game only for home preview */}
+      <div className="px-5 flex justify-center">
+        <div className="w-full max-w-sm">
+          {games.slice(0, 1).map((game) => (
+            <div key={game.id} className="mb-4">
+              <MobileGameCard game={game} />
+            </div>
           ))}
+          
+          {/* View All Games Button */}
+          <button 
+            onClick={() => window.location.href = '/games'}
+            className="w-full text-center text-blue-500 font-semibold py-3 hover:underline"
+          >
+            View all games →
+          </button>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import { ThumbsUp, Eye, Flame } from "lucide-react"
+import { ThumbsUp, Users } from "lucide-react"
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import { useWallet } from "@/hooks/use-wallet"
@@ -20,7 +20,6 @@ interface Game {
 export function MobileGameCard({ game }: { game: Game }) {
   const [likes, setLikes] = useState<string>("0")
   const [views, setViews] = useState<string>("0")
-  const [difficulty, setDifficulty] = useState<number>(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const { isConnected, connect, address } = useWallet()
 
@@ -31,7 +30,6 @@ export function MobileGameCard({ game }: { game: Game }) {
 
     setLikes(`${likeCount}%`)
     setViews(`${(viewCount / 10).toFixed(1)}K`)
-    setDifficulty(3) // Always 3 flames like reference
   }, [game.id])
 
   const handlePlay = async () => {
@@ -51,8 +49,13 @@ export function MobileGameCard({ game }: { game: Game }) {
 
   return (
     <>
-      <div className="bg-gradient-to-br from-blue-50/80 via-white to-purple-50/60 rounded-[22px] p-3.5 shadow-[0_2px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-all duration-200">
-        <div className="relative w-full aspect-square mb-2.5 rounded-[18px] overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 shadow-inner">
+      <div
+        className="rounded-[28px] p-6 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.1)] transition-all duration-200 flex flex-col items-center min-h-[320px]"
+        style={{
+          background: "linear-gradient(to bottom right, rgba(239, 246, 255, 0.9), white, rgba(239, 246, 255, 0.5))",
+        }}
+      >
+        <div className="relative w-[120px] h-[120px] rounded-[24px] overflow-hidden bg-gradient-to-br from-slate-800 via-slate-900 to-black shadow-lg mb-5 mt-1">
           <Image
             src={game.thumbnail_url || "/placeholder.svg?height=200&width=200"}
             alt={game.title}
@@ -62,30 +65,27 @@ export function MobileGameCard({ game }: { game: Game }) {
           />
         </div>
 
-        <h3 className="font-extrabold text-[15px] line-clamp-1 text-gray-900 mb-2 tracking-tight">
+        <h3 className="font-bold text-[18px] text-gray-900 mb-4 tracking-tight text-center leading-tight px-2">
           {truncateTitle(game.title, 14)}
         </h3>
 
-        <div className="flex items-center justify-center gap-3 mb-2 text-xs">
-          <div className="flex items-center gap-1">
-            <ThumbsUp className="w-3.5 h-3.5 text-gray-400 fill-gray-400" />
-            <span className="font-bold text-gray-700">{likes}</span>
+        <div className="flex items-center justify-center gap-6 mb-4 text-xs">
+          <div className="flex items-center gap-1.5">
+            <ThumbsUp className="w-4 h-4 text-gray-400 fill-gray-400" />
+            <span className="font-semibold text-gray-700">{likes}</span>
           </div>
-          <div className="flex items-center gap-1">
-            <Eye className="w-3.5 h-3.5 text-gray-400" />
-            <span className="font-bold text-gray-700">{views}</span>
+          <div className="flex items-center gap-1.5">
+            <Users className="w-4 h-4 text-gray-400" />
+            <span className="font-semibold text-gray-700">{views}</span>
           </div>
         </div>
 
-        <div className="flex gap-1 mb-3 justify-center">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <Flame key={i} className="w-[18px] h-[18px] text-orange-500 fill-orange-500" />
-          ))}
-        </div>
+        <div className="flex gap-1 mb-6 justify-center text-[24px]">🔥🔥🔥</div>
 
+        <div className="flex-grow" />
         <button
           onClick={handlePlay}
-          className="w-full bg-[#4A7FE8] hover:bg-[#3D6ED6] active:scale-[0.96] text-white py-2.5 rounded-full font-bold text-sm shadow-md hover:shadow-lg transition-all duration-150"
+          className="w-full bg-[#4A7FE8] hover:bg-[#3D6ED6] active:scale-[0.97] text-white py-4 rounded-full font-bold text-[17px] shadow-md hover:shadow-lg transition-all duration-150"
         >
           Play
         </button>

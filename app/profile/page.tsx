@@ -1,12 +1,12 @@
 import ProfilePage from "@/components/profile-page"
-import { MobileHeader } from "@/components/mobile-header"
 import { BottomNav } from "@/components/bottom-nav"
 
 export default function Profile() {
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-background via-background to-card">
-      <MobileHeader />
-      <ProfilePage />
+    <div className="relative min-h-screen pb-24 bg-app-gradient page-fade">
+      <div className="animate-in fade-in duration-300">
+        <ProfilePage />
+      </div>
       <BottomNav />
     </div>
   )

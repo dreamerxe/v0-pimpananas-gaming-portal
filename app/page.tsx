@@ -45,25 +45,25 @@ export default async function HomePage() {
   const categories = Array.from(new Set(games.map((game) => game.category || "Other")))
 
   return (
-    <div className="relative min-h-screen pb-24 bg-gradient-to-b from-[#E8E4F3] via-white to-gray-50 overflow-x-hidden">
+    <div className="relative min-h-screen pb-24 bg-app-gradient overflow-x-hidden page-fade">
       {/* Profile Header with Statistics */}
-      <div className="pt-4">
+      <div className="pt-4 animate-in fade-in duration-300">
         <ProfileHeader />
       </div>
 
       {/* Recommended Games Section */}
-      <main className="relative z-10 px-4 mt-2">
+      <main className="relative z-10 px-4 mt-2 animate-in slide-in-from-bottom-4 duration-500 delay-100">
         <h2 className="text-[32px] font-extrabold text-gray-900 mb-5 leading-none tracking-tight">Recommended games</h2>
 
         {/* Category Filter Tabs */}
-        <div className="flex gap-2.5 overflow-x-auto pb-3 scrollbar-hide mb-4 -mx-1 px-1">
+        <div className="flex gap-2.5 overflow-x-auto pb-3 scrollbar-hide mb-4 -mx-1 px-1 smooth-scroll">
           {categories.slice(0, 3).map((category, index) => (
             <button
               key={category}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-full whitespace-nowrap transition-all duration-200 shadow-sm ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-full whitespace-nowrap transition-all duration-200 shadow-sm touch-manipulation ${
                 index === 0
                   ? "bg-white font-bold text-gray-900 scale-[1.02]"
-                  : "bg-white/80 font-semibold text-gray-600"
+                  : "bg-white/80 font-semibold text-gray-600 hover:bg-white"
               }`}
             >
               <span className="text-lg">{categoryEmojis[category] || "🎮"}</span>
@@ -85,9 +85,15 @@ export default async function HomePage() {
           <span className="text-sm font-semibold text-gray-600">More popular above</span>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 pb-4">
-          {games.slice(0, 6).map((game) => (
-            <MobileGameCard key={game.id} game={game} />
+        <div className="grid grid-cols-2 gap-4 pb-4">
+          {games.map((game, index) => (
+            <div
+              key={game.id}
+              className="animate-in fade-in slide-in-from-bottom-2 duration-500"
+              style={{ animationDelay: `${index * 50}ms` }}
+            >
+              <MobileGameCard game={game} />
+            </div>
           ))}
         </div>
       </main>

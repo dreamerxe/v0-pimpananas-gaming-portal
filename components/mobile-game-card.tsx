@@ -2,7 +2,7 @@
 
 import { ThumbsUp, Eye, Flame } from "lucide-react"
 import Image from "next/image"
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useWallet } from "@/hooks/use-wallet"
 import { toast } from "sonner"
 import { GamePlayer } from "@/components/game-player"
@@ -17,21 +17,18 @@ interface Game {
   total_plays?: number
 }
 
+/* ===== Compact Game Card ===== */
 export function MobileGameCard({ game }: { game: Game }) {
-  const [likes, setLikes] = useState<string>("0")
-  const [views, setViews] = useState<string>("0")
-  const [difficulty, setDifficulty] = useState<number>(0)
-  const [isPlaying, setIsPlaying] = useState(false)
+  const [likes, setLikes] = useState("0")
+  const [views, setViews] = useState("0")
   const { isConnected, connect, address } = useWallet()
+  const [isPlaying, setIsPlaying] = useState(false)
 
   useEffect(() => {
-    // Generate realistic stats matching reference (98%, 84.6K)
-    const likeCount = Math.floor(Math.random() * 7) + 92 // 92-98%
-    const viewCount = Math.floor(Math.random() * 600) + 86 // 86-686
-
+    const likeCount = Math.floor(Math.random() * 6) + 93 // 93–98%
+    const viewCount = Math.floor(Math.random() * 600) + 86
     setLikes(`${likeCount}%`)
     setViews(`${(viewCount / 10).toFixed(1)}K`)
-    setDifficulty(3) // Always 3 flames like reference
   }, [game.id])
 
   const handlePlay = async () => {
@@ -43,54 +40,84 @@ export function MobileGameCard({ game }: { game: Game }) {
     setIsPlaying(true)
   }
 
-  // Truncate title like reference "Sonic Speed Si..."
-  const truncateTitle = (title: string, maxLength = 16) => {
-    if (title.length <= maxLength) return title
-    return title.slice(0, maxLength) + "..."
-  }
+  const truncate = (t: string) => (t.length <= 16 ? t : t.slice(0, 14) + "…")
 
   return (
     <>
-      <div className="bg-gradient-to-br from-blue-50/80 via-white to-purple-50/60 rounded-[22px] p-3.5 shadow-[0_2px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-all duration-200">
-        <div className="relative w-full aspect-square mb-2.5 rounded-[18px] overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 shadow-inner">
-          <Image
-            src={game.thumbnail_url || "/placeholder.svg?height=200&width=200"}
-            alt={game.title}
-            fill
-            className="object-cover"
-            priority={false}
-          />
-        </div>
-
-        <h3 className="font-extrabold text-[15px] line-clamp-1 text-gray-900 mb-2 tracking-tight">
-          {truncateTitle(game.title, 14)}
-        </h3>
-
-        <div className="flex items-center justify-center gap-3 mb-2 text-xs">
-          <div className="flex items-center gap-1">
-            <ThumbsUp className="w-3.5 h-3.5 text-gray-400 fill-gray-400" />
-            <span className="font-bold text-gray-700">{likes}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Eye className="w-3.5 h-3.5 text-gray-400" />
-            <span className="font-bold text-gray-700">{views}</span>
-          </div>
-        </div>
-
-        <div className="flex gap-1 mb-3 justify-center">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <Flame key={i} className="w-[18px] h-[18px] text-orange-500 fill-orange-500" />
-          ))}
-        </div>
-
-        <button
-          onClick={handlePlay}
-          className="w-full bg-[#4A7FE8] hover:bg-[#3D6ED6] active:scale-[0.96] text-white py-2.5 rounded-full font-bold text-sm shadow-md hover:shadow-lg transition-all duration-150"
+      {/* Wrapper keeps space for Play button */}
+      <div className="relative w-full max-w-[160px] mx-auto pb-14">
+        {/* Square Card */}
+        <div
+          className="
+            relative w-full aspect-square
+            flex flex-col items-center
+            rounded-[22px]
+            bg-gradient-to-b from-white via-[#F3F6FF] to-[#E9EFFF]
+            shadow-[0_6px_18px_rgba(36,52,99,0.12)]
+            ring-1 ring-black/5
+            pt-8 pb-6 px-3
+            transition-all duration-150
+          "
         >
-          Play
-        </button>
+          {/* Game Icon */}
+          <div className="absolute -top-8 w-[64px] h-[64px] rounded-[16px] overflow-hidden shadow-md ring-1 ring-black/10">
+            <Image
+              src={game.thumbnail_url || "/placeholder.svg"}
+              alt={game.title}
+              fill
+              className="object-cover"
+            />
+          </div>
+
+          {/* Title */}
+          <h3
+            className="mt-1 w-full truncate text-center text-[13.5px] font-extrabold tracking-tight text-slate-900"
+            title={game.title}
+          >
+            {truncate(game.title)}
+          </h3>
+
+          {/* Stats */}
+          <div className="mt-1 mb-1 flex items-center justify-center gap-3 text-[11px]">
+            <div className="flex items-center gap-1 text-slate-500">
+              <ThumbsUp className="h-3 w-3 text-slate-400 fill-slate-400" />
+              <span className="font-semibold text-slate-700">{likes}</span>
+            </div>
+            <div className="flex items-center gap-1 text-slate-500">
+              <Eye className="h-3 w-3 text-slate-400" />
+              <span className="font-semibold text-slate-700">{views}</span>
+            </div>
+          </div>
+
+          {/* Flames */}
+          <div className="mt-1 flex justify-center gap-1">
+            {[0, 1, 2].map((i) => (
+              <Flame
+                key={i}
+                className="h-[15px] w-[15px] text-[#FF7A1A] fill-[#FF7A1A]"
+              />
+            ))}
+          </div>
+
+          {/* Play Button */}
+          <button
+            onClick={handlePlay}
+            className="
+              absolute left-1/2 -translate-x-1/2 -bottom-5
+              h-9 w-[58%]
+              rounded-full bg-[#4A7FE8] hover:bg-[#3F72E2] active:scale-[0.985]
+              text-white text-[13px] font-bold
+              shadow-[0_6px_14px_rgba(74,127,232,0.35)]
+              ring-1 ring-black/5 z-10
+              transition-all duration-150
+            "
+          >
+            Play
+          </button>
+        </div>
       </div>
 
+      {/* Game Player Modal */}
       {isConnected && address && (
         <GamePlayer
           gameId={game.id}
@@ -101,5 +128,25 @@ export function MobileGameCard({ game }: { game: Game }) {
         />
       )}
     </>
+  )
+}
+
+/* ===== Compact Responsive Grid ===== */
+export function MobileGameGrid({ games }: { games: Game[] }) {
+  return (
+    <div
+      className="
+        px-4
+        grid
+        grid-cols-2
+        gap-x-3 sm:gap-x-4
+        gap-y-20 sm:gap-y-24
+        place-items-center
+      "
+    >
+      {games.map((g) => (
+        <MobileGameCard key={g.id} game={g} />
+      ))}
+    </div>
   )
 }

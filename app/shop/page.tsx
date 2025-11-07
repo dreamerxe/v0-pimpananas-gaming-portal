@@ -4,16 +4,30 @@ import { BottomNav } from "@/components/bottom-nav"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ShoppingBag, Coins, ExternalLink } from "lucide-react"
+import { ShoppingBag, Coins, Star, Wallet, ArrowLeft } from "lucide-react"
+import { BuyCoinsDialog } from "@/components/shop/buy-coins-dialog"
 import { useWallet } from "@/hooks/use-wallet"
 import { useUserBalance } from "@/hooks/use-user-balance"
+import { useState } from "react"
 import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 export default function ShopPage() {
   const { isConnected, address } = useWallet()
   const { balance, isLoading, refreshBalance } = useUserBalance()
+  const [buyDialogOpen, setBuyDialogOpen] = useState(false)
+  const router = useRouter()
 
   const shopItems = [
+    {
+      id: "golden_banana",
+      name: "Golden Banana",
+      description: "Unlock premium features for 30 days",
+      price: 5000,
+      icon: "🍌",
+      badge: "Popular",
+      color: "from-yellow-400/30 to-yellow-600/30",
+    },
     {
       id: "power_boost",
       name: "Power Boost",
@@ -21,7 +35,7 @@ export default function ShopPage() {
       price: 2500,
       icon: "⚡",
       badge: "Limited",
-      color: "from-blue-50 to-cyan-50",
+      color: "from-blue-400/30 to-cyan-400/30",
     },
     {
       id: "rare_avatar",
@@ -30,7 +44,7 @@ export default function ShopPage() {
       price: 3500,
       icon: "🎨",
       badge: "New",
-      color: "from-purple-50 to-pink-50",
+      color: "from-purple-400/30 to-pink-400/30",
     },
     {
       id: "mystery_box",
@@ -39,7 +53,7 @@ export default function ShopPage() {
       price: 4000,
       icon: "🎁",
       badge: "Mystery",
-      color: "from-orange-50 to-red-50",
+      color: "from-orange-400/30 to-red-400/30",
     },
   ]
 
@@ -50,7 +64,8 @@ export default function ShopPage() {
     }
 
     if (balance < item.price) {
-      toast.error("🍌 Not enough $PIMP coins!")
+      toast.error("🍌 Not enough $PIMP coins! Buy more below.")
+      setBuyDialogOpen(true)
       return
     }
 
@@ -84,31 +99,38 @@ export default function ShopPage() {
   }
 
   return (
-    <div className="relative min-h-screen pb-24 bg-app-gradient page-fade">
-      <main className="px-4 pt-6 max-w-2xl mx-auto animate-in fade-in duration-300">
-        <h1 className="text-[32px] font-extrabold text-gray-900 mb-6 leading-none tracking-tight">Store</h1>
+    <div className="relative min-h-screen pb-24 bg-gradient-to-b from-[#E8D5F2] via-[#E8D5F2]/50 to-white">
+      {/* Header */}
+      <div className="px-4 py-4 flex items-center gap-3">
+        <button onClick={() => router.back()} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+          <ArrowLeft className="h-5 w-5 text-gray-700" />
+        </button>
+        <h1 className="text-[32px] font-extrabold text-gray-900 mb-6 leading-none tracking-tight flex items-center gap-3">
+          <ShoppingBag className="h-8 w-8 text-[#5B8FF9]" />
+          Banana Shop
+        </h1>
+      </div>
 
+      <main className="px-4 pt-6 max-w-2xl mx-auto">
         {/* Balance Card */}
-        <Card className="mb-6 bg-white border-0 shadow-[0_2px_12px_rgba(0,0,0,0.08)] rounded-[22px]">
-          <CardContent className="pt-6 pb-6">
+        <Card className="mb-6 bg-gradient-to-br from-blue-400/20 to-purple-400/20 border-blue-200 backdrop-blur-sm shadow-lg">
+          <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-gray-600 mb-1">Your Balance</p>
+                <p className="text-sm text-gray-600 mb-1">Your $PIMP Balance</p>
                 <div className="flex items-center gap-2">
-                  <Coins className="h-6 w-6 text-[#4A7FE8]" />
-                  <span className="text-3xl font-black text-gray-900">
+                  <Coins className="h-6 w-6 text-[#5B8FF9]" />
+                  <span className="text-3xl font-bold text-gray-900">
                     {isLoading ? "..." : balance.toLocaleString()}
                   </span>
                 </div>
               </div>
               <Button
-                asChild
-                className="bg-[#4A7FE8] text-white font-bold hover:bg-[#3D6ED6] shadow-md rounded-full px-5 h-11 active:scale-95 transition-all"
+                onClick={() => setBuyDialogOpen(true)}
+                className="bg-[#5B8FF9] text-white font-bold hover:bg-[#4A7FE8] shadow-md"
               >
-                <a href="https://ton.org" target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="mr-2 h-4 w-4" />
-                  Buy More
-                </a>
+                <Wallet className="mr-2 h-4 w-4" />
+                Buy More
               </Button>
             </div>
           </CardContent>
@@ -116,37 +138,32 @@ export default function ShopPage() {
 
         {/* Shop Items Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-          {shopItems.map((item, index) => (
+          {shopItems.map((item) => (
             <Card
               key={item.id}
-              className={`bg-gradient-to-br ${item.color} border-0 shadow-[0_2px_12px_rgba(0,0,0,0.08)] rounded-[22px] overflow-hidden hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-shadow animate-in fade-in slide-in-from-bottom-2 duration-500`}
-              style={{ animationDelay: `${index * 100}ms` }}
+              className={`bg-gradient-to-br ${item.color} border-gray-200 backdrop-blur-sm overflow-hidden hover:shadow-lg transition-all duration-200`}
             >
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between mb-2">
-                  <span className="text-5xl">{item.icon}</span>
-                  {item.badge && (
-                    <Badge className="bg-[#4A7FE8] text-white text-xs px-2.5 py-0.5 font-bold rounded-full">
-                      {item.badge}
-                    </Badge>
-                  )}
+                  <span className="text-4xl">{item.icon}</span>
+                  {item.badge && <Badge className="bg-[#5B8FF9] text-white text-xs px-2 py-0">{item.badge}</Badge>}
                 </div>
-                <CardTitle className="text-lg font-extrabold text-gray-900 tracking-tight">{item.name}</CardTitle>
+                <CardTitle className="text-base font-bold text-gray-900">{item.name}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <p className="text-sm text-gray-600 line-clamp-2 min-h-[2.5rem] leading-snug">{item.description}</p>
+                <p className="text-xs text-gray-600 line-clamp-2 min-h-[2rem]">{item.description}</p>
                 <div className="space-y-2">
-                  <div className="flex items-center justify-center gap-1.5 py-2.5 bg-white rounded-xl">
-                    <Coins className="h-5 w-5 text-[#4A7FE8]" />
-                    <span className="text-base font-black text-[#4A7FE8]">{item.price.toLocaleString()}</span>
+                  <div className="flex items-center justify-center gap-1 py-2 bg-white/70 rounded-md">
+                    <Coins className="h-4 w-4 text-[#5B8FF9]" />
+                    <span className="text-sm font-bold text-[#5B8FF9]">{item.price.toLocaleString()}</span>
                   </div>
                   <Button
                     size="sm"
                     onClick={() => handleBuyItem(item)}
                     disabled={!isConnected || isLoading}
-                    className="w-full h-11 text-sm font-bold bg-[#4A7FE8] hover:bg-[#3D6ED6] text-white shadow-md rounded-full active:scale-95 transition-all touch-manipulation"
+                    className="w-full h-9 text-xs font-bold bg-[#5B8FF9] hover:bg-[#4A7FE8] text-white shadow-sm"
                   >
-                    <ShoppingBag className="mr-1.5 h-4 w-4" />
+                    <ShoppingBag className="mr-1 h-3 w-3" />
                     {!isConnected ? "Connect Wallet" : "Buy Now"}
                   </Button>
                 </div>
@@ -154,9 +171,50 @@ export default function ShopPage() {
             </Card>
           ))}
         </div>
+
+        {/* Daily Special */}
+        <Card className="mb-6 bg-gradient-to-r from-purple-400/20 to-pink-400/20 border-purple-200 backdrop-blur-sm shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg text-gray-900">
+              <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
+              Daily Special Offer
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <h3 className="font-bold text-gray-900 mb-1">Starter Pack</h3>
+                <p className="text-xs text-gray-600 mb-2">Get 5000 bonus coins + 3 power boosts</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm line-through text-gray-500">2000</span>
+                  <span className="text-lg font-bold text-[#5B8FF9]">999 $PIMP</span>
+                  <Badge className="bg-pink-500 text-white">-50%</Badge>
+                </div>
+              </div>
+              <Button
+                onClick={() =>
+                  handleBuyItem({
+                    id: "starter_pack",
+                    name: "Starter Pack",
+                    price: 999,
+                    icon: "🎉",
+                    badge: "Special",
+                    color: "",
+                    description: "",
+                  })
+                }
+                disabled={!isConnected || isLoading}
+                className="bg-gradient-to-r from-pink-500 to-pink-600 text-white font-bold hover:from-pink-600 hover:to-pink-700 shadow-md"
+              >
+                Claim
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </main>
 
       <BottomNav />
+      <BuyCoinsDialog open={buyDialogOpen} onOpenChange={setBuyDialogOpen} onSuccess={refreshBalance} />
     </div>
   )
 }

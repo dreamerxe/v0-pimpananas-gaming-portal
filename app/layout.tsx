@@ -1,15 +1,16 @@
-import type React from "react"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Geist, Geist_Mono } from 'next/font/google'
 import Script from "next/script"
 import "./globals.css"
 import { Providers } from "@/components/providers"
 
-const inter = Inter({
+const geistSans = Geist({ 
   subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: '--font-geist-sans',
+})
+const geistMono = Geist_Mono({ 
+  subsets: ["latin"],
+  variable: '--font-geist-mono',
 })
 
 export const metadata: Metadata = {
@@ -24,12 +25,17 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
-        <Script src="https://telegram.org/js/telegram-web-app.js" strategy="beforeInteractive" />
+        <Script 
+          src="https://telegram.org/js/telegram-web-app.js" 
+          strategy="beforeInteractive" 
+        />
       </head>
-      <body className={`${inter.variable} font-sans antialiased`}>
-        <Providers>{children}</Providers>
+      <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   )

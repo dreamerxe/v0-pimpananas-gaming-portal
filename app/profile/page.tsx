@@ -3,10 +3,8 @@ import { BottomNav } from "@/components/bottom-nav"
 
 export default function Profile() {
   return (
-    <div className="relative min-h-screen pb-24 bg-app-gradient page-fade">
-      <div className="animate-in fade-in duration-300">
-        <ProfilePage />
-      </div>
+    <div className="relative min-h-screen pb-24 bg-gradient-to-b from-[#E8D5F2] via-[#E8D5F2]/50 to-white">
+      <ProfilePage />
       <BottomNav />
     </div>
   )

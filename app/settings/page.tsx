@@ -4,137 +4,141 @@ import { BottomNav } from "@/components/bottom-nav"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
-import { Bell, Volume2, Shield, HelpCircle, Info, ExternalLink, FileText } from "lucide-react"
+import { Settings, Bell, Volume2, Shield, HelpCircle, Info, ExternalLink, FileText } from "lucide-react"
 
 export default function SettingsPage() {
   return (
-    <div
-      className="relative min-h-screen pb-24 page-fade"
-      style={{ background: "linear-gradient(to bottom, #e8e4f3, white, #f9fafb)" }}
-    >
-      <main className="px-4 pt-6 max-w-2xl mx-auto animate-in fade-in duration-300">
-        <h1 className="text-[32px] font-extrabold text-gray-900 mb-6 leading-none tracking-tight">Settings</h1>
+    <div className="relative min-h-screen pb-24 bg-gradient-to-b from-[#E8D5F2] via-[#E8D5F2]/50 to-white">
+      <main className="px-4 pt-6 max-w-2xl mx-auto">
+        {/* Page Title */}
+        <h1 className="text-[32px] font-extrabold text-gray-900 mb-6 leading-none tracking-tight flex items-center gap-3">
+          <Settings className="h-8 w-8 text-[#5B8FF9]" />
+          Settings
+        </h1>
 
         {/* Notifications */}
-        <Card className="mb-4 bg-white border-0 shadow-[0_2px_12px_rgba(0,0,0,0.08)] rounded-[22px] animate-in fade-in slide-in-from-bottom-2 duration-500">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg font-extrabold text-gray-900 tracking-tight">
-              <Bell className="h-5 w-5 text-[#4A7FE8]" />
+        <Card className="mb-4 bg-white/90 border-gray-200 backdrop-blur-sm shadow-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base text-gray-900">
+              <Bell className="h-5 w-5 text-[#5B8FF9]" />
               Notifications
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between py-1">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-gray-900">Push Notifications</p>
-                <p className="text-xs text-gray-600 leading-relaxed">Get notified about new games</p>
+                <p className="text-sm font-medium text-gray-900">Push Notifications</p>
+                <p className="text-xs text-gray-600">Get notified about new games</p>
               </div>
-              <Switch defaultChecked className="data-[state=checked]:bg-[#4A7FE8]" />
+              <Switch defaultChecked />
             </div>
-            <div className="flex items-center justify-between py-1">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-gray-900">Game Updates</p>
-                <p className="text-xs text-gray-600 leading-relaxed">Updates about your favorite games</p>
+                <p className="text-sm font-medium text-gray-900">Game Updates</p>
+                <p className="text-xs text-gray-600">Updates about your favorite games</p>
               </div>
-              <Switch defaultChecked className="data-[state=checked]:bg-[#4A7FE8]" />
+              <Switch defaultChecked />
             </div>
-            <div className="flex items-center justify-between py-1">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-gray-900">Rewards Alerts</p>
-                <p className="text-xs text-gray-600 leading-relaxed">Get notified about rewards</p>
+                <p className="text-sm font-medium text-gray-900">Rewards Alerts</p>
+                <p className="text-xs text-gray-600">Get notified about rewards</p>
               </div>
-              <Switch defaultChecked className="data-[state=checked]:bg-[#4A7FE8]" />
+              <Switch defaultChecked />
             </div>
           </CardContent>
         </Card>
 
         {/* Sound & Vibration */}
-        <Card className="mb-4 bg-white border-0 shadow-[0_2px_12px_rgba(0,0,0,0.08)] rounded-[22px] animate-in fade-in slide-in-from-bottom-2 duration-500 delay-100">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg font-extrabold text-gray-900 tracking-tight">
-              <Volume2 className="h-5 w-5 text-[#4A7FE8]" />
+        <Card className="mb-4 bg-white/90 border-gray-200 backdrop-blur-sm shadow-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base text-gray-900">
+              <Volume2 className="h-5 w-5 text-[#5B8FF9]" />
               Sound & Vibration
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between py-1">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-gray-900">Sound Effects</p>
-                <p className="text-xs text-gray-600 leading-relaxed">In-app sound effects</p>
+                <p className="text-sm font-medium text-gray-900">Sound Effects</p>
+                <p className="text-xs text-gray-600">In-app sound effects</p>
               </div>
-              <Switch defaultChecked className="data-[state=checked]:bg-[#4A7FE8]" />
+              <Switch defaultChecked />
             </div>
-            <div className="flex items-center justify-between py-1">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-gray-900">Haptic Feedback</p>
-                <p className="text-xs text-gray-600 leading-relaxed">Vibration on interactions</p>
+                <p className="text-sm font-medium text-gray-900">Haptic Feedback</p>
+                <p className="text-xs text-gray-600">Vibration on interactions</p>
               </div>
-              <Switch className="data-[state=checked]:bg-[#4A7FE8]" />
+              <Switch />
             </div>
           </CardContent>
         </Card>
 
         {/* Privacy & Security */}
-        <Card className="mb-4 bg-white border-0 shadow-[0_2px_12px_rgba(0,0,0,0.08)] rounded-[22px] animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg font-extrabold text-gray-900 tracking-tight">
-              <Shield className="h-5 w-5 text-[#4A7FE8]" />
+        <Card className="mb-4 bg-white/90 border-gray-200 backdrop-blur-sm shadow-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base text-gray-900">
+              <Shield className="h-5 w-5 text-[#5B8FF9]" />
               Privacy & Security
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between py-1">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-gray-900">Show Profile</p>
-                <p className="text-xs text-gray-600 leading-relaxed">Make your profile visible</p>
+                <p className="text-sm font-medium text-gray-900">Show Profile</p>
+                <p className="text-xs text-gray-600">Make your profile visible</p>
               </div>
-              <Switch defaultChecked className="data-[state=checked]:bg-[#4A7FE8]" />
+              <Switch defaultChecked />
             </div>
-            <div className="flex items-center justify-between py-1">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-gray-900">Share Activity</p>
-                <p className="text-xs text-gray-600 leading-relaxed">Share your gaming activity</p>
+                <p className="text-sm font-medium text-gray-900">Share Activity</p>
+                <p className="text-xs text-gray-600">Share your gaming activity</p>
               </div>
-              <Switch className="data-[state=checked]:bg-[#4A7FE8]" />
+              <Switch />
             </div>
           </CardContent>
         </Card>
 
         {/* Support & Info */}
-        <Card className="mb-4 bg-white border-0 shadow-[0_2px_12px_rgba(0,0,0,0.08)] rounded-[22px] animate-in fade-in slide-in-from-bottom-2 duration-500 delay-300">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg font-extrabold text-gray-900 tracking-tight">
-              <Info className="h-5 w-5 text-[#4A7FE8]" />
+        <Card className="mb-4 bg-white/90 border-gray-200 backdrop-blur-sm shadow-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base text-gray-900">
+              <Info className="h-5 w-5 text-[#5B8FF9]" />
               Support & Information
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             <Button
               variant="ghost"
-              className="w-full justify-between text-gray-900 hover:bg-gray-100/80 active:scale-98 transition-all rounded-xl h-12 touch-manipulation"
+              className="w-full justify-between text-gray-900 hover:bg-gray-100/50"
+              onClick={() => {}}
             >
-              <span className="flex items-center gap-2.5 font-bold">
-                <HelpCircle className="h-4 w-4 text-[#4A7FE8]" />
+              <span className="flex items-center gap-2">
+                <HelpCircle className="h-4 w-4 text-[#5B8FF9]" />
                 Help Center
               </span>
               <ExternalLink className="h-4 w-4 text-gray-500" />
             </Button>
             <Button
               variant="ghost"
-              className="w-full justify-between text-gray-900 hover:bg-gray-100/80 active:scale-98 transition-all rounded-xl h-12 touch-manipulation"
+              className="w-full justify-between text-gray-900 hover:bg-gray-100/50"
+              onClick={() => {}}
             >
-              <span className="flex items-center gap-2.5 font-bold">
-                <FileText className="h-4 w-4 text-[#4A7FE8]" />
+              <span className="flex items-center gap-2">
+                <FileText className="h-4 w-4 text-[#5B8FF9]" />
                 Terms of Service
               </span>
               <ExternalLink className="h-4 w-4 text-gray-500" />
             </Button>
             <Button
               variant="ghost"
-              className="w-full justify-between text-gray-900 hover:bg-gray-100/80 active:scale-98 transition-all rounded-xl h-12 touch-manipulation"
+              className="w-full justify-between text-gray-900 hover:bg-gray-100/50"
+              onClick={() => {}}
             >
-              <span className="flex items-center gap-2.5 font-bold">
-                <FileText className="h-4 w-4 text-[#4A7FE8]" />
+              <span className="flex items-center gap-2">
+                <FileText className="h-4 w-4 text-[#5B8FF9]" />
                 Privacy Policy
               </span>
               <ExternalLink className="h-4 w-4 text-gray-500" />
@@ -143,12 +147,12 @@ export default function SettingsPage() {
         </Card>
 
         {/* App Info */}
-        <Card className="mb-4 bg-white border-0 shadow-[0_2px_12px_rgba(0,0,0,0.08)] rounded-[22px] animate-in fade-in slide-in-from-bottom-2 duration-500 delay-[400ms]">
-          <CardContent className="pt-6 pb-6 text-center space-y-2">
-            <div className="text-5xl mb-3">🍌</div>
-            <h3 className="font-black text-xl text-[#4A7FE8] tracking-tight">PIMPANANAS</h3>
-            <p className="text-sm font-semibold text-gray-600">Version 1.0.0</p>
-            <p className="text-xs text-gray-500 leading-relaxed">© 2025 PIMPANANAS. All rights reserved.</p>
+        <Card className="mb-4 bg-white/90 border-gray-200 backdrop-blur-sm shadow-sm">
+          <CardContent className="pt-6 text-center space-y-2">
+            <div className="text-4xl mb-2">🍌</div>
+            <h3 className="font-bold text-[#5B8FF9]">PIMPANANAS</h3>
+            <p className="text-xs text-gray-600">Version 1.0.0</p>
+            <p className="text-xs text-gray-500">© 2025 PIMPANANAS. All rights reserved.</p>
           </CardContent>
         </Card>
       </main>

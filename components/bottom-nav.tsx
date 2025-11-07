@@ -28,10 +28,10 @@ export function BottomNav() {
     { id: "settings", icon: Settings, label: "Settings", path: "/settings" },
   ]
 
-  const handleNavigation = (item: typeof navItems[0]) => {
+  const handleNavigation = (item: (typeof navItems)[0]) => {
     // Immediate visual feedback
     setActive(item.id)
-    
+
     // Use startTransition for smoother navigation
     startTransition(() => {
       router.push(item.path)
@@ -39,8 +39,8 @@ export function BottomNav() {
   }
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg safe-area-inset-bottom">
-      <div className="flex items-center justify-around px-6 py-3 max-w-screen-xl mx-auto">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 shadow-[0_-4px_12px_rgba(0,0,0,0.08)] safe-area-inset-bottom">
+      <div className="flex items-center justify-around px-8 py-2 max-w-screen-xl mx-auto">
         {navItems.map((item) => {
           const Icon = item.icon
           const isActive = active === item.id
@@ -50,22 +50,19 @@ export function BottomNav() {
               onClick={() => handleNavigation(item)}
               disabled={isPending}
               className={cn(
-                "flex flex-col items-center gap-1 py-2 px-6 transition-all duration-200 rounded-xl min-w-[80px] touch-manipulation",
+                "flex flex-col items-center gap-1 py-2.5 px-6 transition-all duration-200 rounded-xl touch-manipulation",
                 "active:scale-95",
-                isActive && "bg-[#5B8FF9] shadow-lg scale-105",
-                isPending && "opacity-50"
+                isActive && "scale-105",
+                isPending && "opacity-50",
               )}
             >
               <Icon
-                className={cn(
-                  "h-6 w-6 transition-all duration-200",
-                  isActive ? "text-white" : "text-gray-500"
-                )}
+                className={cn("h-7 w-7 transition-all duration-200", isActive ? "text-[#4A7FE8]" : "text-gray-400")}
               />
-              <span 
+              <span
                 className={cn(
-                  "text-xs font-semibold transition-all duration-200",
-                  isActive ? "text-white" : "text-gray-500"
+                  "text-xs font-bold transition-all duration-200",
+                  isActive ? "text-[#4A7FE8]" : "text-gray-500",
                 )}
               >
                 {item.label}

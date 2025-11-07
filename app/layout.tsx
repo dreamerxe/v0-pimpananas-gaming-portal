@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "PIMPANANAS - Web3 Gaming Portal",
   description: "Play the best WebGL games with your TON wallet. Neon-powered gaming paradise.",
+    generator: 'v0.app'
 }
 
 export default function RootLayout({

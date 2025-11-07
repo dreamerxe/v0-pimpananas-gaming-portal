@@ -28,7 +28,7 @@ export function MobileGameCard({ game }: { game: Game }) {
     // Generate realistic stats matching reference (98%, 84.6K)
     const likeCount = Math.floor(Math.random() * 7) + 92 // 92-98%
     const viewCount = Math.floor(Math.random() * 600) + 86 // 86-686
-    
+
     setLikes(`${likeCount}%`)
     setViews(`${(viewCount / 10).toFixed(1)}K`)
     setDifficulty(3) // Always 3 flames like reference
@@ -44,16 +44,15 @@ export function MobileGameCard({ game }: { game: Game }) {
   }
 
   // Truncate title like reference "Sonic Speed Si..."
-  const truncateTitle = (title: string, maxLength: number = 16) => {
+  const truncateTitle = (title: string, maxLength = 16) => {
     if (title.length <= maxLength) return title
     return title.slice(0, maxLength) + "..."
   }
 
   return (
     <>
-      <div className="bg-gradient-to-br from-blue-100 via-blue-50 to-purple-50 rounded-[24px] p-4 shadow-md hover:shadow-lg transition-all duration-200">
-        {/* Game thumbnail with darker background */}
-        <div className="relative w-full aspect-square mb-3 rounded-[20px] overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900 shadow-sm">
+      <div className="bg-gradient-to-br from-blue-50/80 via-white to-purple-50/60 rounded-[22px] p-3.5 shadow-[0_2px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-all duration-200">
+        <div className="relative w-full aspect-square mb-2.5 rounded-[18px] overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 shadow-inner">
           <Image
             src={game.thumbnail_url || "/placeholder.svg?height=200&width=200"}
             alt={game.title}
@@ -63,43 +62,35 @@ export function MobileGameCard({ game }: { game: Game }) {
           />
         </div>
 
-        {/* Game title - truncated with ... */}
-        <h3 className="font-bold text-[15px] line-clamp-1 text-gray-900 mb-2 tracking-tight text-center">
-          {truncateTitle(game.title)}
+        <h3 className="font-extrabold text-[15px] line-clamp-1 text-gray-900 mb-2 tracking-tight">
+          {truncateTitle(game.title, 14)}
         </h3>
-        
-        {/* Stats row - compact spacing */}
-        <div className="flex items-center justify-center gap-3 mb-2 text-xs text-gray-600">
+
+        <div className="flex items-center justify-center gap-3 mb-2 text-xs">
           <div className="flex items-center gap-1">
-            <ThumbsUp className="w-3.5 h-3.5 text-gray-500" />
-            <span className="font-semibold">{likes}</span>
+            <ThumbsUp className="w-3.5 h-3.5 text-gray-400 fill-gray-400" />
+            <span className="font-bold text-gray-700">{likes}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Eye className="w-3.5 h-3.5 text-gray-500" />
-            <span className="font-semibold">{views}</span>
+            <Eye className="w-3.5 h-3.5 text-gray-400" />
+            <span className="font-bold text-gray-700">{views}</span>
           </div>
         </div>
 
-        {/* Difficulty flames - centered and closer together */}
-        <div className="flex gap-0.5 mb-3 justify-center">
+        <div className="flex gap-1 mb-3 justify-center">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Flame 
-              key={i} 
-              className="w-4 h-4 text-orange-500 fill-orange-500"
-            />
+            <Flame key={i} className="w-[18px] h-[18px] text-orange-500 fill-orange-500" />
           ))}
         </div>
 
-        {/* Play button - exact blue from reference */}
         <button
           onClick={handlePlay}
-          className="w-full bg-[#2E7EF6] hover:bg-[#2563EB] active:scale-[0.98] text-white py-3 rounded-full font-bold text-[15px] shadow-md transition-all duration-150"
+          className="w-full bg-[#4A7FE8] hover:bg-[#3D6ED6] active:scale-[0.96] text-white py-2.5 rounded-full font-bold text-sm shadow-md hover:shadow-lg transition-all duration-150"
         >
           Play
         </button>
       </div>
 
-      {/* Game Player Modal */}
       {isConnected && address && (
         <GamePlayer
           gameId={game.id}

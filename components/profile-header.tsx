@@ -17,7 +17,7 @@ export function ProfileHeader() {
   const router = useRouter()
   const [stats, setStats] = useState({
     level: 0,
-    timeSpent: 0 // in minutes
+    timeSpent: 0, // in minutes
   })
   const [isLoading, setIsLoading] = useState(true)
 
@@ -33,25 +33,22 @@ export function ProfileHeader() {
 
   const fetchUserStats = async () => {
     if (!address) return
-    
+
     setIsLoading(true)
     const supabase = createClient()
-    
+
     try {
-      const { data: plays } = await supabase
-        .from("plays")
-        .select("duration_seconds")
-        .eq("wallet_address", address)
-      
+      const { data: plays } = await supabase.from("plays").select("duration_seconds").eq("wallet_address", address)
+
       const gamesPlayed = plays?.length || 0
       const totalTimeSeconds = plays?.reduce((sum, play) => sum + (play.duration_seconds || 0), 0) || 0
-      
+
       // Calculate level: 1,500 based on games*100 + time formula
       const level = Math.floor((gamesPlayed * 100 + totalTimeSeconds / 60) / 100) || 1500
-      
+
       setStats({
         level: level,
-        timeSpent: Math.floor(totalTimeSeconds / 60) || 23
+        timeSpent: Math.floor(totalTimeSeconds / 60) || 23,
       })
     } catch (error) {
       console.error("Error fetching user stats:", error)
@@ -61,11 +58,8 @@ export function ProfileHeader() {
     }
   }
 
-  const displayName = isTelegram && user?.username 
-    ? `@${user.username}` 
-    : address 
-    ? `@${address.slice(2, 10)}`
-    : "@littlebear0213"
+  const displayName =
+    isTelegram && user?.username ? `@${user.username}` : address ? `@${address.slice(2, 10)}` : "@littlebear0213"
 
   const formatTime = (minutes: number) => {
     const hours = Math.floor(minutes / 60)
@@ -74,107 +68,105 @@ export function ProfileHeader() {
   }
 
   return (
-    <div className="px-5">
-      {/* Profile Card */}
-      <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-md p-5 mb-6">
-        <div className="flex items-start justify-between mb-4">
-          {/* Avatar and Info */}
-          <div className="flex items-center gap-3">
-            <div 
-              className="cursor-pointer"
+    <div className="px-4">
+      <div className="bg-white/90 backdrop-blur-sm rounded-[28px] shadow-[0_2px_16px_rgba(0,0,0,0.08)] p-4 mb-5">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-3.5">
+            <div
+              className="cursor-pointer transition-transform active:scale-95"
               onClick={() => router.push("/profile")}
             >
-              <Avatar className="h-16 w-16 border-4 border-white shadow-md">
-                <AvatarImage src={user?.photo_url} alt={displayName} />
-                <AvatarFallback className="bg-gradient-to-br from-orange-400 to-orange-500 text-white text-xl font-bold">
+              <Avatar className="h-[72px] w-[72px] border-[3px] border-white shadow-lg ring-2 ring-orange-200/50">
+                <AvatarImage src={user?.photo_url || "/placeholder.svg"} alt={displayName} />
+                <AvatarFallback className="bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 text-white text-2xl font-black">
                   {isTelegram && user ? user.first_name?.[0] || "L" : "L"}
                 </AvatarFallback>
               </Avatar>
             </div>
-            
+
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <Coins className="h-4 w-4 text-orange-500" />
-                <span className="text-xl font-bold text-gray-900">
-                  {balance.toLocaleString()}
-                </span>
+              <div className="flex items-center gap-2 mb-0.5">
+                <div className="bg-gradient-to-r from-orange-400 to-orange-500 p-1 rounded-lg shadow-sm">
+                  <Coins className="h-4 w-4 text-white" />
+                </div>
+                <span className="text-[22px] font-black text-gray-900">{balance.toLocaleString()}</span>
               </div>
-              <p className="text-xs text-gray-600">Currency</p>
+              <p className="text-xs text-gray-500 font-medium">Currency</p>
             </div>
           </div>
 
-          {/* How to earn button */}
-          <button 
+          <button
             onClick={() => router.push("/shop")}
-            className="text-sm font-semibold text-[#5B8FF9] hover:text-[#4A7FE8] transition-colors"
+            className="text-sm font-bold text-[#4A7FE8] hover:text-[#3D6ED6] transition-colors bg-blue-50 px-3 py-1.5 rounded-lg"
           >
             How to earn?
           </button>
         </div>
 
-        {/* Username Badge */}
-        <div className="inline-flex items-center bg-[#5B8FF9] text-white px-4 py-1.5 rounded-full text-sm font-semibold shadow-sm">
+        <div className="inline-flex items-center bg-[#4A7FE8] text-white px-4 py-2 rounded-full text-[13px] font-bold shadow-sm">
           {displayName}
         </div>
       </div>
 
-      {/* Statistics Section */}
-      <h2 className="text-[28px] font-bold text-gray-900 text-center mb-4 leading-tight tracking-tight">Statistics</h2>
-      
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        {/* Level Card - Purple gradient like reference */}
-        <Card className="bg-white border-0 shadow-md overflow-hidden">
+      <h2 className="text-[32px] font-extrabold text-gray-900 mb-4 leading-none tracking-tight">Statistics</h2>
+
+      <div className="grid grid-cols-2 gap-3 mb-5">
+        {/* Level Card */}
+        <Card className="bg-white border-0 shadow-[0_2px_12px_rgba(0,0,0,0.08)] overflow-hidden rounded-[22px]">
           <CardContent className="p-0">
-            <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-6 flex flex-col items-center justify-center aspect-square">
-              <div className="bg-gradient-to-br from-yellow-300 to-yellow-400 p-3 rounded-2xl mb-2 shadow-lg">
-                <Crown className="h-8 w-8 text-yellow-700" />
+            <div className="bg-gradient-to-br from-purple-500 via-purple-600 to-purple-700 px-4 py-8 flex flex-col items-center justify-center">
+              <div className="bg-gradient-to-br from-yellow-300 via-yellow-400 to-yellow-500 p-3.5 rounded-2xl mb-2 shadow-lg">
+                <Crown className="h-9 w-9 text-yellow-800" />
               </div>
-              <p className="text-white text-sm font-medium">Level</p>
+              <p className="text-white text-sm font-bold">Level</p>
             </div>
             <div className="bg-white p-4 text-center">
               {isLoading ? (
-                <div className="h-9 flex items-center justify-center">
+                <div className="h-10 flex items-center justify-center">
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>
                 </div>
               ) : (
-                <p className="text-3xl font-black text-purple-600">
-                  {stats.level.toLocaleString()}
-                </p>
+                <p className="text-[32px] font-black text-purple-600 leading-none">{stats.level.toLocaleString()}</p>
               )}
             </div>
           </CardContent>
         </Card>
 
-        {/* Time Card - Green gradient like reference */}
-        <Card className="bg-white border-0 shadow-md overflow-hidden">
+        {/* Time Card */}
+        <Card className="bg-white border-0 shadow-[0_2px_12px_rgba(0,0,0,0.08)] overflow-hidden rounded-[22px]">
           <CardContent className="p-0">
-            <div className="bg-gradient-to-br from-green-400 to-green-500 p-6 flex flex-col items-center justify-center aspect-square">
-              <div className="bg-gradient-to-br from-gray-600 to-gray-700 p-3 rounded-2xl mb-2 shadow-lg">
-                <Clock className="h-8 w-8 text-white" />
+            <div className="bg-gradient-to-br from-lime-400 via-lime-500 to-green-500 px-4 py-8 flex flex-col items-center justify-center">
+              <div className="bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900 p-3.5 rounded-2xl mb-2 shadow-lg">
+                <Clock className="h-9 w-9 text-white" />
               </div>
-              <p className="text-gray-800 text-sm font-medium">Time</p>
+              <p className="text-gray-900 text-sm font-bold">Time</p>
             </div>
             <div className="bg-white p-4 text-center">
               {isLoading ? (
-                <div className="h-9 flex items-center justify-center">
+                <div className="h-10 flex items-center justify-center">
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
                 </div>
               ) : (
-                <p className="text-3xl font-black text-green-600">
-                  {formatTime(stats.timeSpent)}
-                </p>
+                <p className="text-[32px] font-black text-green-600 leading-none">{formatTime(stats.timeSpent)}</p>
               )}
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Today Toggle - matching reference */}
-      <div className="flex items-center justify-center gap-4 mb-8">
-        <div className="w-12 h-1 bg-[#5B8FF9] rounded-full"></div>
-        <button className="flex items-center gap-2 text-sm font-semibold text-[#5B8FF9] bg-white px-4 py-2 rounded-full shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex items-center justify-center gap-3 mb-6">
+        <div className="flex flex-col gap-1.5">
+          <div className="w-1 h-4 bg-[#4A7FE8] rounded-full"></div>
+          <div className="w-1 h-4 bg-[#4A7FE8] rounded-full"></div>
+        </div>
+        <button className="flex items-center gap-2 text-sm font-bold text-[#4A7FE8] bg-white px-5 py-2.5 rounded-full shadow-sm hover:shadow-md transition-shadow">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2.5}
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            />
           </svg>
           Today
         </button>

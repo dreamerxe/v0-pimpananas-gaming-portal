@@ -14,7 +14,7 @@ export default async function HomePage() {
 
   if (error || !games || games.length === 0) {
     return (
-      <div className="relative min-h-screen pb-20 bg-[#F5F3F0]">
+      <div className="relative min-h-screen pb-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="pt-4">
           <ProfileHeader />
         </div>
@@ -28,62 +28,70 @@ export default async function HomePage() {
     )
   }
 
-  // Map categories to emojis matching the design
   const categoryEmojis: Record<string, string> = {
-    "Survival": "⭐",
-    "Action": "👊",
-    "Collector": "💎",
-    "Racing": "🏎️",
-    "Puzzle": "🧩",
-    "Arcade": "🕹️",
-    "Casual": "✨",
-    "Strategy": "🎯",
-    "Sports": "⚽",
-    "Adventure": "🗺️",
-    "Other": "🎮"
+    Survival: "⭐",
+    Action: "🎯",
+    Collector: "💎",
+    Racing: "🏎️",
+    Puzzle: "🧩",
+    Arcade: "🕹️",
+    Casual: "✨",
+    Strategy: "♟️",
+    Sports: "⚽",
+    Adventure: "🗺️",
+    Other: "🎮",
   }
 
-  // Get unique categories from games
-  const categories = Array.from(new Set(games.map(game => game.category || "Other")))
+  const categories = Array.from(new Set(games.map((game) => game.category || "Other")))
 
   return (
-    <div className="relative min-h-screen pb-20 bg-gradient-to-b from-[#E8D5F2] via-[#E8D5F2]/50 to-white max-w-[100vw] overflow-x-hidden">
+    <div className="relative min-h-screen pb-24 bg-gradient-to-b from-[#E8E4F3] via-white to-gray-50 overflow-x-hidden">
       {/* Profile Header with Statistics */}
       <div className="pt-4">
         <ProfileHeader />
       </div>
-      
+
       {/* Recommended Games Section */}
-      <main className="relative z-10 px-5 mt-6">
-        <h2 className="text-[28px] font-bold text-gray-900 text-center mb-5 leading-tight tracking-tight">
-          Recommended games
-        </h2>
-        
+      <main className="relative z-10 px-4 mt-2">
+        <h2 className="text-[32px] font-extrabold text-gray-900 mb-5 leading-none tracking-tight">Recommended games</h2>
+
         {/* Category Filter Tabs */}
-        <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide mb-6 justify-center">
+        <div className="flex gap-2.5 overflow-x-auto pb-3 scrollbar-hide mb-4 -mx-1 px-1">
           {categories.slice(0, 3).map((category, index) => (
-            <div 
+            <button
               key={category}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-full whitespace-nowrap transition-all duration-200 ${
-                index === 0 
-                  ? 'bg-white font-semibold text-gray-900 shadow-sm' 
-                  : 'bg-white/70 font-medium text-gray-700'
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-full whitespace-nowrap transition-all duration-200 shadow-sm ${
+                index === 0
+                  ? "bg-white font-bold text-gray-900 scale-[1.02]"
+                  : "bg-white/80 font-semibold text-gray-600"
               }`}
             >
-              <span className="text-base">{categoryEmojis[category] || "🎮"}</span>
+              <span className="text-lg">{categoryEmojis[category] || "🎮"}</span>
               <span className="text-[15px]">{category}</span>
-            </div>
+            </button>
           ))}
         </div>
 
-        {/* Games Grid - 2 columns with proper spacing */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        {/* More popular above indicator */}
+        <div className="flex items-center justify-center gap-2 py-3 mb-4">
+          <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
+            />
+          </svg>
+          <span className="text-sm font-semibold text-gray-600">More popular above</span>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 pb-4">
           {games.slice(0, 6).map((game) => (
             <MobileGameCard key={game.id} game={game} />
           ))}
         </div>
       </main>
-      
+
       <BottomNav />
     </div>
   )

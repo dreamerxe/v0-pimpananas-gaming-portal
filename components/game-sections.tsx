@@ -1,6 +1,5 @@
 import { createServerClient } from "@/lib/supabase-server"
 import { GameGrid } from "@/components/game-grid-mobile"
-import { CTAButtons } from "@/components/cta-buttons"
 
 export async function GameSections() {
   const supabase = createServerClient()
@@ -31,51 +30,57 @@ export async function GameSections() {
     return acc
   }, {} as Record<string, typeof games>)
 
-  // Define section icons and colors
-  const categoryIcons: Record<string, { emoji: string; colorClass: string; title: string }> = {
-    "Action": { emoji: "🔥", colorClass: "text-secondary", title: "Action Games" },
-    "Racing": { emoji: "🏎️", colorClass: "text-primary", title: "Racing Games" },
-    "Puzzle": { emoji: "🧩", colorClass: "text-secondary", title: "Puzzle Games" },
-    "Arcade": { emoji: "🕹️", colorClass: "text-primary", title: "Arcade Games" },
-    "Casual": { emoji: "✨", colorClass: "text-secondary", title: "Casual Games" },
-    "Strategy": { emoji: "🎯", colorClass: "text-primary", title: "Strategy Masters" },
-    "Sports": { emoji: "⚽", colorClass: "text-secondary", title: "Sports Games" },
-    "Adventure": { emoji: "🗺️", colorClass: "text-primary", title: "Adventure Games" },
-    "Other": { emoji: "🎮", colorClass: "text-secondary", title: "More Games" }
+  // Map categories to emojis
+  const categoryEmojis: Record<string, string> = {
+    "Action": "👊",
+    "Racing": "🏎️",
+    "Puzzle": "🧩",
+    "Arcade": "🕹️",
+    "Casual": "✨",
+    "Strategy": "🎯",
+    "Sports": "⚽",
+    "Adventure": "🗺️",
+    "Other": "🎮"
   }
 
-  // Get top 9 games for featured section (Top Bananas)
-  const topBananas = games.slice(0, 9)
+  // Get all categories
+  const categories = Object.keys(gamesByCategory)
 
   return (
-    <div className="space-y-8 pb-6 pt-4">
-      {/* Top Bananas Section - Featured/Most Recent */}
-      <section className="space-y-4">
-        <div className="px-4 flex items-center gap-3">
-          <span className="text-2xl drop-shadow-[0_0_8px_rgba(255,51,230,0.5)]">🔥</span>
-          <h2 className="text-xl font-black text-secondary">Top Bananas</h2>
-        </div>
-        <GameGrid games={topBananas} />
-      </section>
-
-      {/* CTA Buttons with banana theme */}
-      <CTAButtons />
-
-      {/* Category Sections - Display all categories with games */}
-      {Object.entries(gamesByCategory).map(([category, categoryGames]) => {
-        const config = categoryIcons[category] || categoryIcons["Other"]
+    <div className="pb-6 pt-4 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 min-h-screen">
+      <div className="px-4 mb-4">
+        <h2 className="text-2xl font-black text-gray-900 mb-4">Recommended games</h2>
         
-        return (
-          <section key={category} className="space-y-4">
-            <div className="px-4 flex items-center gap-3">
-              <span className="text-2xl drop-shadow-[0_0_8px_rgba(255,226,71,0.5)]">{config.emoji}</span>
-              <h2 className={`text-xl font-black ${config.colorClass}`}>{config.title}</h2>
-              <span className="text-sm text-muted-foreground">({categoryGames.length})</span>
+        {/* Category Filter Tabs */}
+        <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide mb-2">
+          {categories.map((category, index) => (
+            <div 
+              key={category}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap shadow-sm transition-all ${
+                index === 0 
+                  ? 'bg-white font-semibold text-gray-900' 
+                  : 'bg-white/60 font-medium text-gray-700 hover:bg-white/80'
+              }`}
+            >
+              <span className="text-lg">{categoryEmojis[category] || "🎮"}</span>
+              <span className="text-sm">{category}</span>
             </div>
-            <GameGrid games={categoryGames} />
-          </section>
-        )
-      })}
+          ))}
+        </div>
+
+        {/* More popular above toggle */}
+        <button className="flex items-center justify-center gap-2 text-sm text-gray-600 font-medium mb-4 mx-auto">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
+          </svg>
+          More popular above
+        </button>
+      </div>
+
+      {/* Games Grid - Show all games */}
+      <div className="px-4">
+        <GameGrid games={games} />
+      </div>
     </div>
   )
 }

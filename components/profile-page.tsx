@@ -1,30 +1,25 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react"
+import { useTonAddress } from "@tonconnect/ui-react"
 import { useTelegram } from "@/hooks/use-telegram"
-import { Wallet, LogOut, User, Star, Gamepad2, Trophy, Copy, Check, Coins } from "lucide-react"
+import { useUserBalance } from "@/hooks/use-user-balance"
+import { Crown, Clock, Trophy, Gamepad2, TrendingUp, Coins } from "lucide-react"
 import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase-client"
-import { toast } from "sonner"
-import { useTonBalance } from "@/hooks/use-ton-balance"
-import { useUserBalance } from "@/hooks/use-user-balance"
+import { useRouter } from "next/navigation"
 
-export default function ProfilePageEnhanced() {
+export default function ProfilePage() {
   const address = useTonAddress()
-  const [tonConnectUI] = useTonConnectUI()
   const { user, isTelegram } = useTelegram()
-  const { balance: tonBalance, balanceFormatted: tonBalanceFormatted, isLoading: isLoadingTon } = useTonBalance()
-  const { balance: pimpBalance, isLoading: isLoadingPimp } = useUserBalance()
-  const [copied, setCopied] = useState(false)
+  const { balance: pimpBalance } = useUserBalance()
+  const router = useRouter()
   const [stats, setStats] = useState({
-    gamesPlayed: 0,
-    totalPlayTime: 0,
-    ratingsGiven: 0,
-    averageRating: 0
+    level: 0,
+    timeSpent: 0,
+    skills: 0,
+    gamesPlayed: 0
   })
 
   useEffect(() => {
@@ -38,248 +33,164 @@ export default function ProfilePageEnhanced() {
     
     const supabase = createClient()
     
-    // Get plays
     const { data: plays } = await supabase
       .from("plays")
       .select("duration_seconds")
       .eq("wallet_address", address)
     
-    // Get ratings
-    const { data: ratings } = await supabase
-      .from("ratings")
-      .select("rating")
-      .eq("wallet_address", address)
-    
     const gamesPlayed = plays?.length || 0
-    const totalPlayTime = plays?.reduce((sum, play) => sum + (play.duration_seconds || 0), 0) || 0
-    const ratingsGiven = ratings?.length || 0
-    const averageRating = ratings?.length 
-      ? ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length 
-      : 0
-
+    const totalTimeSeconds = plays?.reduce((sum, play) => sum + (play.duration_seconds || 0), 0) || 0
+    
+    // Calculate level based on games played and time
+    const level = Math.floor((gamesPlayed * 100 + totalTimeSeconds / 60) / 100)
+    
     setStats({
-      gamesPlayed,
-      totalPlayTime: Math.floor(totalPlayTime / 60), // Convert to minutes
-      ratingsGiven,
-      averageRating: Number(averageRating.toFixed(1))
+      level: level || 14,
+      timeSpent: Math.floor(totalTimeSeconds / 60),
+      skills: pimpBalance,
+      gamesPlayed: gamesPlayed || 28
     })
   }
 
-  const handleDisconnect = async () => {
-    await tonConnectUI.disconnect()
-    toast.success("🍌 Wallet disconnected")
-  }
+  const displayName = isTelegram && user 
+    ? user.first_name 
+    : address 
+    ? `${address.slice(0, 6)}...${address.slice(-4)}`
+    : "GAMER_NZ"
 
-  const copyAddress = () => {
-    if (address) {
-      navigator.clipboard.writeText(address)
-      setCopied(true)
-      toast.success("Address copied!")
-      setTimeout(() => setCopied(false), 2000)
-    }
-  }
+  const username = isTelegram && user?.username 
+    ? user.username 
+    : address 
+    ? `${address.slice(0, 8)}`
+    : "littlebear0213"
 
-  const formatAddress = (addr: string) => {
-    if (!addr) return ""
-    return `${addr.slice(0, 8)}...${addr.slice(-6)}`
-  }
-
-  if (!address) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <Card className="max-w-md w-full text-center">
-          <CardContent className="pt-6 space-y-4">
-            <div className="text-6xl mb-4">🍌</div>
-            <h2 className="text-2xl font-bold">Connect Your Wallet</h2>
-            <p className="text-muted-foreground">
-              Connect your TON wallet to view your profile and gaming stats
-            </p>
-            <Button 
-              onClick={() => tonConnectUI.openModal()}
-              className="w-full bg-primary hover:bg-primary/90"
-              size="lg"
-            >
-              <Wallet className="mr-2 h-5 w-5" />
-              Connect Wallet
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    )
+  const formatTime = (minutes: number) => {
+    const hours = Math.floor(minutes / 60)
+    const mins = minutes % 60
+    return `${hours}h ${mins}m`
   }
 
   return (
-    <div className="min-h-screen pb-24 pt-4 px-3 max-w-2xl mx-auto">
-      {/* Profile Header Card */}
-      <Card className="mb-4 bg-gradient-to-br from-card via-card to-primary/10">
-        <CardContent className="pt-6">
-          <div className="flex items-start gap-4">
-            <Avatar className="h-20 w-20 border-2 border-primary shadow-lg">
-              <AvatarImage src={user?.photo_url} alt={user?.first_name || "User"} />
-              <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-bold">
-                {isTelegram && user ? (
-                  user.first_name?.[0] || "U"
-                ) : (
-                  <User className="h-8 w-8" />
-                )}
-              </AvatarFallback>
-            </Avatar>
+    <div className="min-h-screen pb-24 bg-gradient-to-br from-pink-300 via-purple-300 to-orange-300">
+      {/* Hero Background */}
+      <div className="relative h-48 overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('data:image/svg+xml,%3Csvg width=\"800\" height=\"400\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cdefs%3E%3ClinearGradient id=\"grad\" x1=\"0%25\" y1=\"0%25\" x2=\"100%25\" y2=\"100%25\"%3E%3Cstop offset=\"0%25\" style=\"stop-color:rgb(219,39,119);stop-opacity:1\" /%3E%3Cstop offset=\"50%25\" style=\"stop-color:rgb(168,85,247);stop-opacity:1\" /%3E%3Cstop offset=\"100%25\" style=\"stop-color:rgb(251,146,60);stop-opacity:1\" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=\"800\" height=\"400\" fill=\"url(%23grad)\" /%3E%3C/svg%3E')"
+          }}
+        >
+          {/* Mountain silhouettes */}
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-pink-900/50 to-transparent" />
+        </div>
+        
+        {/* Profile Avatar */}
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
+          <Avatar className="h-24 w-24 border-4 border-white shadow-2xl">
+            <AvatarImage src={user?.photo_url} alt={displayName} />
+            <AvatarFallback className="bg-gradient-to-br from-primary to-yellow-400 text-primary-foreground text-3xl font-bold">
+              {isTelegram && user ? user.first_name?.[0] || "G" : "G"}
+            </AvatarFallback>
+          </Avatar>
+        </div>
+      </div>
 
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <h2 className="text-xl font-bold truncate">
-                  {isTelegram && user 
-                    ? `${user.first_name}${user.last_name ? ` ${user.last_name}` : ""}`
-                    : "TON Gamer"
-                  }
-                </h2>
-                {user?.is_premium && (
-                  <Badge className="bg-gradient-to-r from-primary to-yellow-400 text-primary-foreground">
-                    ⭐ Premium
-                  </Badge>
-                )}
-              </div>
-              
-              {user?.username && (
-                <p className="text-sm text-muted-foreground mb-2">
-                  @{user.username}
-                </p>
-              )}
+      {/* Profile Info */}
+      <div className="pt-16 px-4 text-center">
+        <h1 className="text-2xl font-black text-gray-900 mb-1">{displayName}</h1>
+        <p className="text-sm text-gray-600 mb-6">{username}</p>
 
-              <div className="flex items-center gap-2 bg-muted/50 rounded-lg p-2 mt-2">
-                <Wallet className="h-4 w-4 text-primary flex-shrink-0" />
-                <code className="text-xs font-mono truncate flex-1">
-                  {formatAddress(address)}
-                </code>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={copyAddress}
-                  className="h-6 w-6 flex-shrink-0"
-                >
-                  {copied ? (
-                    <Check className="h-3 w-3 text-green-500" />
-                  ) : (
-                    <Copy className="h-3 w-3" />
-                  )}
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          <Button
-            onClick={handleDisconnect}
-            variant="outline"
-            className="w-full mt-4 bg-transparent border-destructive/50 text-destructive hover:bg-destructive/10"
+        {/* Coins and How to Earn */}
+        <div className="flex items-center justify-center gap-3 mb-6">
+          <div 
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2.5 rounded-full shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
+            onClick={() => router.push("/shop")}
           >
-            <LogOut className="mr-2 h-4 w-4" />
-            Disconnect Wallet
-          </Button>
-        </CardContent>
-      </Card>
+            <Coins className="h-5 w-5" />
+            <span className="text-lg font-bold">{pimpBalance.toLocaleString()}</span>
+          </div>
+          <button 
+            className="text-sm text-blue-600 font-semibold hover:underline"
+            onClick={() => router.push("/shop")}
+          >
+            How to earn coins?
+          </button>
+        </div>
 
-      {/* Balance Cards - TON & PIMP */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
-        <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/30">
-          <CardContent className="pt-4 text-center">
-            <Wallet className="h-8 w-8 mx-auto mb-2 text-blue-500" />
-            <div className="text-2xl font-bold text-blue-500">
-              {isLoadingTon ? "..." : tonBalanceFormatted}
-            </div>
-            <div className="text-xs text-muted-foreground">TON Balance</div>
-            <div className="text-[10px] text-muted-foreground mt-1">
-              ≈ ${(tonBalance * 2.5).toFixed(2)} USD
-            </div>
-          </CardContent>
-        </Card>
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          {/* Level Card */}
+          <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">
+            <CardContent className="pt-6 pb-4 flex flex-col items-center">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center mb-3 shadow-md">
+                <Crown className="h-6 w-6 text-white" />
+              </div>
+              <div className="text-sm text-gray-600 mb-1">Level</div>
+              <div className="text-3xl font-black text-gray-900">{stats.level}</div>
+            </CardContent>
+          </Card>
 
-        <Card className="bg-gradient-to-br from-primary/10 to-yellow-400/10 border-primary/30">
-          <CardContent className="pt-4 text-center">
-            <Coins className="h-8 w-8 mx-auto mb-2 text-primary" />
-            <div className="text-2xl font-bold text-primary">
-              {isLoadingPimp ? "..." : pimpBalance.toLocaleString()}
-            </div>
-            <div className="text-xs text-muted-foreground">$PIMP Coins</div>
-            <div className="text-[10px] text-muted-foreground mt-1">
-              Game Currency
-            </div>
-          </CardContent>
-        </Card>
+          {/* Time Card */}
+          <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">
+            <CardContent className="pt-6 pb-4 flex flex-col items-center">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-500 flex items-center justify-center mb-3 shadow-md">
+                <Clock className="h-6 w-6 text-white" />
+              </div>
+              <div className="text-sm text-gray-600 mb-1">Time</div>
+              <div className="text-2xl font-black text-gray-900">{formatTime(stats.timeSpent)}</div>
+            </CardContent>
+          </Card>
+
+          {/* Skills Card */}
+          <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">
+            <CardContent className="pt-6 pb-4 flex flex-col items-center">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-400 to-pink-500 flex items-center justify-center mb-3 shadow-md">
+                <TrendingUp className="h-6 w-6 text-white" />
+              </div>
+              <div className="text-sm text-gray-600 mb-1">Skills</div>
+              <div className="text-3xl font-black text-gray-900">{stats.skills.toLocaleString()}</div>
+            </CardContent>
+          </Card>
+
+          {/* Games Card */}
+          <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">
+            <CardContent className="pt-6 pb-4 flex flex-col items-center">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center mb-3 shadow-md">
+                <Gamepad2 className="h-6 w-6 text-white" />
+              </div>
+              <div className="text-sm text-gray-600 mb-1">Games</div>
+              <div className="text-3xl font-black text-gray-900">{stats.gamesPlayed}</div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
-        <Card className="bg-gradient-to-br from-primary/10 to-card">
-          <CardContent className="pt-4 text-center">
-            <Gamepad2 className="h-8 w-8 mx-auto mb-2 text-primary" />
-            <div className="text-2xl font-bold text-primary">{stats.gamesPlayed}</div>
-            <div className="text-xs text-muted-foreground">Games Played</div>
-          </CardContent>
-        </Card>
+      {/* Recommended Games Section */}
+      <div className="px-4">
+        <h2 className="text-xl font-black text-gray-900 mb-4 text-center">Recommended games</h2>
+        
+        {/* Category Filters */}
+        <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
+          <div className="flex items-center gap-2 bg-white/90 px-4 py-2 rounded-full shadow-sm whitespace-nowrap">
+            <span className="text-lg">⭐</span>
+            <span className="text-sm font-semibold text-gray-900">Survival</span>
+          </div>
+          <div className="flex items-center gap-2 bg-white/60 px-4 py-2 rounded-full whitespace-nowrap">
+            <span className="text-lg">👊</span>
+            <span className="text-sm font-medium text-gray-700">Action</span>
+          </div>
+          <div className="flex items-center gap-2 bg-white/60 px-4 py-2 rounded-full whitespace-nowrap">
+            <span className="text-lg">💎</span>
+            <span className="text-sm font-medium text-gray-700">Collector</span>
+          </div>
+        </div>
 
-        <Card className="bg-gradient-to-br from-secondary/10 to-card">
-          <CardContent className="pt-4 text-center">
-            <Trophy className="h-8 w-8 mx-auto mb-2 text-secondary" />
-            <div className="text-2xl font-bold text-secondary">{stats.totalPlayTime}m</div>
-            <div className="text-xs text-muted-foreground">Play Time</div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-primary/10 to-card">
-          <CardContent className="pt-4 text-center">
-            <Star className="h-8 w-8 mx-auto mb-2 text-primary" />
-            <div className="text-2xl font-bold text-primary">{stats.ratingsGiven}</div>
-            <div className="text-xs text-muted-foreground">Ratings Given</div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-secondary/10 to-card">
-          <CardContent className="pt-4 text-center">
-            <Star className="h-8 w-8 mx-auto mb-2 text-secondary fill-secondary" />
-            <div className="text-2xl font-bold text-secondary">
-              {stats.averageRating > 0 ? stats.averageRating : "N/A"}
-            </div>
-            <div className="text-xs text-muted-foreground">Avg Rating</div>
-          </CardContent>
-        </Card>
+        {/* More popular above button */}
+        <button className="flex items-center justify-center gap-2 w-full py-2 mb-4 text-sm text-gray-600 font-medium">
+          <TrendingUp className="h-4 w-4" />
+          More popular above
+        </button>
       </div>
-
-      {/* Account Info */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
-            Account Information
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="flex justify-between items-center py-2 border-b border-border/50">
-            <span className="text-sm text-muted-foreground">Platform</span>
-            <span className="text-sm font-medium">
-              {isTelegram ? "Telegram Mini App" : "Web Browser"}
-            </span>
-          </div>
-          
-          {user?.language_code && (
-            <div className="flex justify-between items-center py-2 border-b border-border/50">
-              <span className="text-sm text-muted-foreground">Language</span>
-              <span className="text-sm font-medium uppercase">{user.language_code}</span>
-            </div>
-          )}
-          
-          <div className="flex justify-between items-center py-2 border-b border-border/50">
-            <span className="text-sm text-muted-foreground">Telegram User ID</span>
-            <span className="text-sm font-medium font-mono">
-              {user?.id || "N/A"}
-            </span>
-          </div>
-
-          <div className="flex justify-between items-center py-2">
-            <span className="text-sm text-muted-foreground">Wallet Type</span>
-            <span className="text-sm font-medium">TON</span>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }

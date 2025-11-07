@@ -73,17 +73,17 @@ export default async function HomePage() {
         </div>
 
         {/* More popular above indicator */}
-        {/* <div className="flex items-center justify-center gap-2 py-3 mb-4">
-          <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
-            />
-          </svg>
-          <span className="text-sm font-semibold text-gray-600">More popular above</span>
-        </div> */}
+        <div className="flex items-center justify-center gap-2 py-3 mb-4">
+          {/* <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"> */}
+            {/* <path */}
+              {/* strokeLinecap="round" */}
+              {/* strokeLinejoin="round" */}
+              {/* strokeWidth={2} */}
+              {/* d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" */}
+            {/* /> */}
+          {/* </svg> */}
+          {/* <span className="text-sm font-semibold text-gray-600">More popular above</span> */}
+        </div>
 
         <div className="grid grid-cols-2 gap-3 pb-4">
           {games.map((game) => (

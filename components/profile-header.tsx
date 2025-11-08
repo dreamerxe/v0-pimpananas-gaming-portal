@@ -112,49 +112,70 @@ export function ProfileHeader() {
         Statistics
       </h2>
 
-      <div className="grid grid-cols-2 gap-3 mb-5">
+      <div className="grid grid-cols-2 gap-3 mb-5 max-w-xs mx-auto sm:max-w-sm">
         {/* Level Card */}
-        <Card className="bg-white border-0 shadow-[0_2px_12px_rgba(0,0,0,0.08)] overflow-hidden rounded-[22px]">
-          <CardContent className="p-0">
-            <div className="bg-gradient-to-br from-purple-500 via-purple-600 to-purple-700 px-4 py-8 flex flex-col items-center justify-center">
-              <div className="bg-gradient-to-br from-yellow-300 via-yellow-400 to-yellow-500 p-3.5 rounded-2xl mb-2 shadow-lg">
-                <Crown className="h-9 w-9 text-yellow-800" />
-              </div>
-              <p className="text-white text-sm font-bold">Level</p>
+        <Card className="relative border-0 bg-transparent rounded-[26px] shadow-[0_14px_35px_rgba(0,0,0,0.20)] overflow-hidden aspect-[4/5]">
+          <CardContent className="p-0 h-full flex flex-col">
+            {/* Top gradient area */}
+            <div
+              className="
+          flex flex-col items-center justify-center
+          flex-[3]
+          bg-[radial-gradient(circle_at_top,_#f6e0ff_0,_#a855f7_40%,_#7e22ce_100%)]
+          pt-5
+        "
+            >
+              <Crown className="h-11 w-11 drop-shadow-[0_6px_14px_rgba(0,0,0,0.45)] text-yellow-300" />
+              <p className="mt-2 text-[13px] font-semibold text-white">Level</p>
             </div>
-            <div className="bg-white p-4 text-center">
+
+            {/* Bottom white area */}
+            <div className="flex-[2] bg-white px-3 pb-4 pt-3 flex items-center justify-center">
               {isLoading ? (
-                <div className="h-10 flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>
+                <div className="h-8 flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500" />
                 </div>
               ) : (
-                <p className="text-[32px] font-black text-purple-600 leading-none">{stats.level.toLocaleString()}</p>
+                <p className="text-[28px] font-black leading-none text-[#9b5cff] tracking-tight">
+                  {stats.level.toLocaleString()}
+                </p>
               )}
             </div>
           </CardContent>
         </Card>
 
         {/* Time Card */}
-        <Card className="bg-white border-0 shadow-[0_2px_12px_rgba(0,0,0,0.08)] overflow-hidden rounded-[22px]">
-          <CardContent className="p-0">
-            <div className="bg-gradient-to-br from-lime-400 via-lime-500 to-green-500 px-4 py-8 flex flex-col items-center justify-center">
-              <div className="bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900 p-3.5 rounded-2xl mb-2 shadow-lg">
-                <Clock className="h-9 w-9 text-white" />
-              </div>
-              <p className="text-gray-900 text-sm font-bold">Time</p>
+        <Card className="relative border-0 bg-transparent rounded-[26px] shadow-[0_14px_35px_rgba(0,0,0,0.20)] overflow-hidden aspect-[4/5]">
+          <CardContent className="p-0 h-full flex flex-col">
+            {/* Top gradient area */}
+            <div
+              className="
+          flex flex-col items-center justify-center
+          flex-[3]
+          bg-[radial-gradient(circle_at_top,_#f4ffdd_0,_#a3e635_40%,_#22c55e_100%)]
+          pt-5
+        "
+            >
+              <Clock className="h-11 w-11 drop-shadow-[0_6px_14px_rgba(0,0,0,0.45)] text-white" />
+              <p className="mt-2 text-[13px] font-semibold text-[#355422]">Time</p>
             </div>
-            <div className="bg-white p-4 text-center">
+
+            {/* Bottom white area */}
+            <div className="flex-[2] bg-white px-3 pb-4 pt-3 flex items-center justify-center">
               {isLoading ? (
-                <div className="h-10 flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
+                <div className="h-8 flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-500" />
                 </div>
               ) : (
-                <p className="text-[32px] font-black text-green-600 leading-none">{formatTime(stats.timeSpent)}</p>
+                <p className="text-[28px] font-black leading-none text-[#16a34a] tracking-tight">
+                  {formatTime(stats.timeSpent)}
+                </p>
               )}
             </div>
           </CardContent>
         </Card>
       </div>
+
 
       <div className="flex items-center justify-center gap-3 mb-6">
         <div className="flex flex-col gap-1.5">

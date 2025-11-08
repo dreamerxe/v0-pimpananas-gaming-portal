@@ -108,7 +108,9 @@ export function ProfileHeader() {
         </div>
       </div>
 
-      <h2 className="text-[32px] font-extrabold text-gray-900 mb-4 leading-none tracking-tight">Statistics</h2>
+      <h2 className="text-[32px] font-extrabold text-gray-900 mb-4 leading-none tracking-tight text-center">
+        Statistics
+      </h2>
 
       <div className="grid grid-cols-2 gap-3 mb-5">
         {/* Level Card */}

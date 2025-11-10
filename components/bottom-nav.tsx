@@ -9,13 +9,11 @@ import { cn } from "@/lib/utils"
 export function BottomNav() {
   const pathname = usePathname()
   const [active, setActive] = useState<"games" | "shop" | "settings">("games")
-  const [isTransitioning, setIsTransitioning] = useState(false)
 
   useEffect(() => {
     if (pathname === "/") setActive("games")
     else if (pathname === "/shop") setActive("shop")
     else if (pathname === "/settings") setActive("settings")
-    setIsTransitioning(false)
   }, [pathname])
 
   const navItems = [
@@ -41,32 +39,23 @@ export function BottomNav() {
               <Link
                 key={item.id}
                 href={item.path}
-                prefetch
-                onClick={(e) => {
-                  if (isTransitioning) {
-                    e.preventDefault()
-                    return
-                  }
-                  setActive(item.id)
-                  setIsTransitioning(true)
-                }}
+                prefetch={true}
                 className={cn(
-                  "flex flex-col items-center justify-center gap-0.5 flex-1 rounded-full transition-all duration-200",
+                  "flex flex-col items-center justify-center gap-0.5 flex-1 rounded-full transition-all duration-150",
                   "px-2 py-1 active:scale-95 select-none",
                   isActive ? "bg-white/60 shadow-sm" : "hover:bg-white/40",
-                  isTransitioning && !isActive && "opacity-50 pointer-events-none",
                 )}
               >
                 <Icon
                   className={cn(
-                    "h-4 w-4 transition-all duration-200",
+                    "h-4 w-4 transition-all duration-150",
                     isActive ? "text-[#4A7FE8]" : "text-gray-500 hover:text-gray-700",
                   )}
                   strokeWidth={isActive ? 2.4 : 2}
                 />
                 <span
                   className={cn(
-                    "text-[9px] font-medium transition-colors duration-200",
+                    "text-[9px] font-medium transition-colors duration-150",
                     isActive ? "text-[#4A7FE8]" : "text-gray-600",
                   )}
                 >

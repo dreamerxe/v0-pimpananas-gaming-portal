@@ -11,7 +11,6 @@ import {
   Volume2,
   Shield,
   HelpCircle,
-  Info,
   ExternalLink,
   FileText,
   Wallet,
@@ -90,10 +89,10 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="relative min-h-screen pb-24 bg-gradient-to-b from-[#E8D5F2] via-[#E8D5F2]/50 to-white">
+    <div className="relative min-h-screen pb-24 bg-gradient-to-b from-[#E8E4F3] via-white to-gray-50">
       <main className="px-4 pt-6 max-w-2xl mx-auto">
         {/* Profile Section */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-[28px] shadow-[0_2px_16px_rgba(0,0,0,0.08)] p-6 mb-5">
+        <Card className="mb-5 bg-white/90 backdrop-blur-sm border-gray-200 shadow-sm">
           <div className="flex flex-col items-center">
             <Avatar className="h-24 w-24 border-4 border-white shadow-lg ring-2 ring-purple-200/50 mb-4">
               <AvatarImage src={user?.photo_url || "/placeholder.svg"} alt={displayName} />
@@ -160,10 +159,10 @@ export default function SettingsPage() {
               </div>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Wallet Connection */}
-        <Card className="mb-4 bg-white/90 border-gray-200 backdrop-blur-sm shadow-sm">
+        <Card className="mb-4 bg-white/90 backdrop-blur-sm border-gray-200 shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base text-gray-900">
               <Wallet className="h-5 w-5 text-[#5B8FF9]" />
@@ -188,13 +187,13 @@ export default function SettingsPage() {
         </Card>
 
         {/* Settings Title */}
-        <h1 className="text-[32px] font-extrabold text-gray-900 mb-6 leading-none tracking-tight flex items-center gap-3">
-          <Settings className="h-8 w-8 text-[#5B8FF9]" />
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-6 leading-none tracking-tight flex items-center gap-3">
+          <Settings className="h-7 w-7 sm:h-8 sm:w-8 text-[#5B8FF9]" />
           Settings
         </h1>
 
         {/* Notifications */}
-        <Card className="mb-4 bg-white/90 border-gray-200 backdrop-blur-sm shadow-sm">
+        <Card className="mb-4 bg-white/90 backdrop-blur-sm border-gray-200 shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base text-gray-900">
               <Bell className="h-5 w-5 text-[#5B8FF9]" />
@@ -227,7 +226,7 @@ export default function SettingsPage() {
         </Card>
 
         {/* Sound & Vibration */}
-        <Card className="mb-4 bg-white/90 border-gray-200 backdrop-blur-sm shadow-sm">
+        <Card className="mb-4 bg-white/90 backdrop-blur-sm border-gray-200 shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base text-gray-900">
               <Volume2 className="h-5 w-5 text-[#5B8FF9]" />
@@ -253,7 +252,7 @@ export default function SettingsPage() {
         </Card>
 
         {/* Privacy & Security */}
-        <Card className="mb-4 bg-white/90 border-gray-200 backdrop-blur-sm shadow-sm">
+        <Card className="mb-4 bg-white/90 backdrop-blur-sm border-gray-200 shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base text-gray-900">
               <Shield className="h-5 w-5 text-[#5B8FF9]" />
@@ -279,13 +278,7 @@ export default function SettingsPage() {
         </Card>
 
         {/* Support & Info */}
-        <Card className="mb-4 bg-white/90 border-gray-200 backdrop-blur-sm shadow-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base text-gray-900">
-              <Info className="h-5 w-5 text-[#5B8FF9]" />
-              Support & Information
-            </CardTitle>
-          </CardHeader>
+        <Card className="mb-4 bg-white/90 backdrop-blur-sm border-gray-200 shadow-sm">
           <CardContent className="space-y-2">
             <Button variant="ghost" className="w-full justify-between text-gray-900 hover:bg-gray-100/50">
               <span className="flex items-center gap-2">
@@ -312,7 +305,7 @@ export default function SettingsPage() {
         </Card>
 
         {/* App Info */}
-        <Card className="mb-4 bg-white/90 border-gray-200 backdrop-blur-sm shadow-sm">
+        <Card className="mb-4 bg-white/90 backdrop-blur-sm border-gray-200 shadow-sm">
           <CardContent className="pt-6 text-center space-y-2">
             <div className="text-4xl mb-2">🍌</div>
             <h3 className="font-bold text-[#5B8FF9]">PIMPANANAS</h3>

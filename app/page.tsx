@@ -54,7 +54,7 @@ export default async function HomePage() {
       {/* Recommended Games Section */}
       <main className="relative z-10 px-4 mt-2">
         {/* Category Filter Tabs */}
-        <div className="flex gap-2.5 overflow-x-auto pb-3 scrollbar-hide mb-6 -mx-1 px-1">
+        <div className="flex gap-2.5 overflow-x-auto pb-3 scrollbar-hide mb-10 -mx-1 px-1">
           {categories.slice(0, 3).map((category, index) => (
             <button
               key={category}

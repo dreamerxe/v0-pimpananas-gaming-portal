@@ -4,7 +4,7 @@ import { BottomNav } from "@/components/bottom-nav"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Coins, Zap, TrendingUp, Wallet, Check, AlertCircle, ArrowLeft, ShoppingBag } from "lucide-react"
+import { Coins, Zap, TrendingUp, Wallet, Check, AlertCircle, ShoppingBag } from "lucide-react"
 import { useWallet } from "@/hooks/use-wallet"
 import { useUserBalance } from "@/hooks/use-user-balance"
 import { useTonBalance } from "@/hooks/use-ton-balance"
@@ -142,21 +142,18 @@ export default function ShopPage() {
   }
 
   return (
-    <div className="relative min-h-screen pb-24 bg-gradient-to-b from-[#E8D5F2] via-[#E8D5F2]/50 to-white">
+    <div className="relative min-h-screen pb-24 bg-gradient-to-b from-[#E8E4F3] via-white to-gray-50">
       {/* Header */}
-      <div className="px-4 py-4 flex items-center gap-3 mb-2">
-        <button onClick={() => router.back()} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-          <ArrowLeft className="h-5 w-5 text-gray-700" />
-        </button>
-        <h1 className="text-2xl sm:text-[32px] font-extrabold text-gray-900 leading-none tracking-tight flex items-center gap-2 sm:gap-3">
-          <ShoppingBag className="h-6 w-6 sm:h-8 sm:w-8 text-[#5B8FF9]" />
+      <div className="px-4 pt-6 pb-4">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-none tracking-tight flex items-center gap-2 sm:gap-3">
+          <ShoppingBag className="h-7 w-7 sm:h-8 sm:w-8 text-[#5B8FF9]" />
           Buy $PIMP Coins
         </h1>
       </div>
 
       <main className="px-4 max-w-2xl mx-auto">
         {/* Your $PIMP Balance Card */}
-        <Card className="mb-4 bg-gradient-to-br from-purple-400/20 to-pink-400/20 border-purple-200 backdrop-blur-sm shadow-lg">
+        <Card className="mb-4 bg-white/90 backdrop-blur-sm border-gray-200 shadow-sm">
           <CardContent className="pt-6">
             <div className="text-center">
               <p className="text-sm text-gray-600 mb-2">Your $PIMP Balance</p>
@@ -170,43 +167,47 @@ export default function ShopPage() {
 
         {/* TON Balance Display */}
         {isConnected && (
-          <div className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-lg p-4 mb-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Your TON Balance</p>
-                <div className="flex items-center gap-2">
-                  <Wallet className="h-5 w-5 text-blue-500" />
-                  <span className="text-2xl font-bold text-blue-500">
-                    {isLoadingBalance ? "..." : balanceFormatted} TON
-                  </span>
+          <Card className="mb-4 bg-white/90 backdrop-blur-sm border-gray-200 shadow-sm">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Your TON Balance</p>
+                  <div className="flex items-center gap-2">
+                    <Wallet className="h-5 w-5 text-blue-500" />
+                    <span className="text-2xl font-bold text-blue-500">
+                      {isLoadingBalance ? "..." : balanceFormatted} TON
+                    </span>
+                  </div>
+                  {tonBalance === 0 && (
+                    <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+                      <AlertCircle className="h-3 w-3" />
+                      You need TON to purchase coins. Get TON from an exchange or bridge.
+                    </p>
+                  )}
                 </div>
-                {tonBalance === 0 && (
-                  <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
-                    <AlertCircle className="h-3 w-3" />
-                    You need TON to purchase coins. Get TON from an exchange or bridge.
-                  </p>
-                )}
+                <div className="text-right">
+                  <Badge variant="outline" className="mt-1">
+                    {tonBalance > 0 ? "✓ Ready" : "⚠ Low Balance"}
+                  </Badge>
+                </div>
               </div>
-              <div className="text-right">
-                <Badge variant="outline" className="mt-1">
-                  {tonBalance > 0 ? "✓ Ready" : "⚠ Low Balance"}
-                </Badge>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         )}
 
         {/* First Purchase Bonus Banner */}
-        <div className="bg-gradient-to-r from-primary/20 to-secondary/20 border border-primary/30 rounded-lg p-4 mb-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Zap className="h-5 w-5 text-primary" />
-            <h3 className="font-bold text-primary">First Purchase Bonus!</h3>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            Get <span className="text-primary font-bold">+100% extra coins</span> on your first purchase! Limited time
-            offer.
-          </p>
-        </div>
+        <Card className="mb-4 bg-white/90 backdrop-blur-sm border-gray-200 shadow-sm">
+          <CardContent className="pt-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Zap className="h-5 w-5 text-primary" />
+              <h3 className="font-bold text-primary">First Purchase Bonus!</h3>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Get <span className="text-primary font-bold">+100% extra coins</span> on your first purchase! Limited time
+              offer.
+            </p>
+          </CardContent>
+        </Card>
 
         {/* Coin Packages */}
         <div className="space-y-3 mb-6">
@@ -218,9 +219,11 @@ export default function ShopPage() {
             return (
               <Card
                 key={pkg.id}
-                className={`relative transition-all ${!canAfford ? "opacity-50" : "hover:shadow-lg"} ${
-                  pkg.bestValue ? "border-secondary/50 bg-secondary/5" : ""
-                } ${selectedPackage?.id === pkg.id ? "border-primary ring-2 ring-primary/20" : ""}`}
+                className={`relative transition-all bg-white/90 backdrop-blur-sm border-gray-200 shadow-sm ${
+                  !canAfford ? "opacity-50" : "hover:shadow-md"
+                } ${pkg.bestValue ? "border-secondary/50 bg-secondary/5" : ""} ${
+                  selectedPackage?.id === pkg.id ? "border-primary ring-2 ring-primary/20" : ""
+                }`}
               >
                 <CardContent className="pt-6 pb-6">
                   {/* Badges */}
@@ -289,20 +292,22 @@ export default function ShopPage() {
         </div>
 
         {/* Info Footer */}
-        <div className="bg-muted/50 rounded-lg p-4 space-y-2 text-sm mb-6">
-          <div className="flex items-start gap-2">
-            <Check className="h-4 w-4 text-primary mt-0.5" />
-            <span>Instant delivery after transaction confirmation</span>
-          </div>
-          <div className="flex items-start gap-2">
-            <Check className="h-4 w-4 text-primary mt-0.5" />
-            <span>Secure payment via TON blockchain</span>
-          </div>
-          <div className="flex items-start gap-2">
-            <Check className="h-4 w-4 text-primary mt-0.5" />
-            <span>No hidden fees - what you see is what you pay</span>
-          </div>
-        </div>
+        <Card className="mb-6 bg-white/90 backdrop-blur-sm border-gray-200 shadow-sm">
+          <CardContent className="pt-6 space-y-2 text-sm">
+            <div className="flex items-start gap-2">
+              <Check className="h-4 w-4 text-primary mt-0.5" />
+              <span>Instant delivery after transaction confirmation</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <Check className="h-4 w-4 text-primary mt-0.5" />
+              <span>Secure payment via TON blockchain</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <Check className="h-4 w-4 text-primary mt-0.5" />
+              <span>No hidden fees - what you see is what you pay</span>
+            </div>
+          </CardContent>
+        </Card>
 
         {!isConnected && (
           <div className="text-center p-6 bg-primary/10 rounded-lg border border-primary/20 mb-6">

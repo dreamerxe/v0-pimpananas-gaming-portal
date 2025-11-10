@@ -53,12 +53,8 @@ export default async function HomePage() {
 
       {/* Recommended Games Section */}
       <main className="relative z-10 px-4 mt-2">
-        <h2 className="text-[32px] font-extrabold text-gray-900 mb-5 leading-none tracking-tight text-center">
-          Recommended games
-        </h2>
-
         {/* Category Filter Tabs */}
-        <div className="flex gap-2.5 overflow-x-auto pb-3 scrollbar-hide mb-4 -mx-1 px-1">
+        <div className="flex gap-2.5 overflow-x-auto pb-3 scrollbar-hide mb-6 -mx-1 px-1">
           {categories.slice(0, 3).map((category, index) => (
             <button
               key={category}
@@ -72,19 +68,6 @@ export default async function HomePage() {
               <span className="text-[15px]">{category}</span>
             </button>
           ))}
-        </div>
-
-        {/* More popular above indicator */}
-        <div className="flex items-center justify-center gap-2 py-3 mb-4">
-          {/* <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"> */}
-          {/* <path */}
-          {/* strokeLinecap="round" */}
-          {/* strokeLinejoin="round" */}
-          {/* strokeWidth={2} */}
-          {/* d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" */}
-          {/* /> */}
-          {/* </svg> */}
-          {/* <span className="text-sm font-semibold text-gray-600">More popular above</span> */}
         </div>
 
         <div className="grid grid-cols-2 gap-3 pb-4">
